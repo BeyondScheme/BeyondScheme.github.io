@@ -85,6 +85,9 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: $base-font-weight;
 }
 
+h1.big {
+  font-size: 40px;
+}
 
 
 /**
@@ -104,6 +107,20 @@ a {
     }
 }
 
+a.contact-button {
+  color: $background-color;
+  background-color: $brand-color;
+  text-decoration: none;
+  font-size: 30px;
+  outline: 1px solid darken($brand-color, 15%);
+  padding: 10px 15px;
+
+  &:hover {
+    color: $background-color;
+    background-color: lighten($brand-color, 5%);
+    outline: 1px solid $brand-color;
+  }
+}
 
 
 /**
@@ -203,4 +220,11 @@ pre {
             fill: $grey-color;
         }
     }
+}
+
+/*
+ * Others
+ */
+.margin-top-1x {
+  padding-top: 10px;
 }
