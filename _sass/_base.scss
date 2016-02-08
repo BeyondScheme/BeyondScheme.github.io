@@ -230,12 +230,15 @@ pre {
   .tech-icons-group {
     padding-bottom: 50px;
     text-align: center;
+
+    .tech-icon {
+      padding-right: 20px;
+    }
   }
 
   .tech-icons-group-languages {
     .tech-icon {
       height: 100px;
-      padding-right: 20px;
     }
 
     .tech-icon-java {
@@ -246,7 +249,6 @@ pre {
   .tech-icons-group-frameworks {
     .tech-icon {
       height: 90px;
-      padding-right: 20px;
     }
 
     .tech-icon-spring {
@@ -257,21 +259,18 @@ pre {
   .tech-icons-group-databases {
     .tech-icon {
       height: 60px;
-      padding-right: 20px;
     }
   }
 
   .tech-icons-group-other {
     .tech-icon {
       height: 60px;
-      padding-right: 20px;
     }
   }
 
   .tech-icons-group-platforms {
     .tech-icon {
       height: 60px;
-      padding-right: 20px;
     }
   }
 }
