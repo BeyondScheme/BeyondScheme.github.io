@@ -15,6 +15,7 @@ url: "http://beyondscheme.com" # the base hostname & protocol for your site
 twitter_username: BeyondSchemeCom
 github_username: BeyondScheme
 blog_url: http://blog.beyondscheme.com
+static_maps_key: AIzaSyDHFWEJjlBpNFCGXZFtnzm8JWcektYvPx0
 
 # Build settings
 markdown: kramdown
