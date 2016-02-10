@@ -281,20 +281,6 @@ pre {
   margin-bottom: 50px;
 }
 
-.column-left {
-  float: left;
-  width: 33%;
-}
-
-.column-right {
-  float: right;
-  width: 33%;
-}
-
-.column-center {
-  display: inline-block;
-  width: 33%;
-}
 
 .text-align-center {
   text-align: center;
@@ -314,3 +300,41 @@ pre {
 .container {
   display: inline-block;
 }
+
+
+#column-left {
+  width: 33%;
+  float: left;
+}
+
+#column-center {
+  width: 33%;
+  float: left;
+}
+
+#column-right {
+  width: 33%;
+  float: left;
+}
+
+
+@media screen and (max-width: 800px) {
+
+  #column-left {
+    width: auto;
+    float: none;
+  }
+
+  #column-center {
+    width: auto;
+    float: none;
+    margin-left: 0px;
+  }
+
+  #column-right {
+    width: auto;
+    float: none;
+  }
+
+}
+
