@@ -114,6 +114,14 @@ a.contact-button {
   }
 }
 
+a.site-title {
+  color: $brand-color;
+
+  &:visited, &:hover {
+    color: $brand-color;
+  }
+}
+
 a.page-link {
   &:hover {
     color: $brand-color;
