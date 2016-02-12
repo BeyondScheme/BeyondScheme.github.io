@@ -204,83 +204,20 @@ pre {
   }
 }
 
-.tech-icons {
-  .tech-icons-group {
-    padding-bottom: 50px;
-    text-align: center;
+/*
+* welcome - section
+*/
 
-    .tech-icon {
-      padding-right: 20px;
-    }
-  }
-
-  .tech-icons-group-languages {
-    .tech-icon {
-      height: 100px;
-    }
-
-    .tech-icon-java {
-      height: 160px;
-    }
-  }
-
-  .tech-icons-group-frameworks {
-    .tech-icon {
-      height: 90px;
-    }
-
-    .tech-icon-spring {
-      height: 140px;
-    }
-  }
-
-  .tech-icons-group-databases {
-    .tech-icon {
-      height: 60px;
-    }
-  }
-
-  .tech-icons-group-other {
-    .tech-icon {
-      height: 60px;
-    }
-  }
-
-  .tech-icons-group-platforms {
-    .tech-icon {
-      height: 60px;
-    }
-  }
+#welcome-section {
+  border-bottom: 1px solid $grey-color-light;
 }
-
-.contact {
-  h3 {
-    text-align: center;
-    padding: 20px;
-  }
-
-  img {
-    margin: 0 auto;
-    display: block;
-  }
-
-  .contact-us-button {
-    text-align: center;
-  }
-}
-
 
 /*
- * Others
- */
-.margin-top-1x {
-  padding-top: 10px;
+* who are we - section
+*/
+#who-are-we-section {
+  border-bottom: 1px solid $grey-color-light;
 }
-
-.section {
-  margin-bottom: 50px;
-}
-
 
 .text-align-center {
   text-align: center;
@@ -338,3 +275,97 @@ pre {
 
 }
 
+/*
+* how we work - section
+*/
+#how-we-work-section {
+  border-bottom: 1px solid $grey-color-light;
+}
+
+/*
+* technology - section
+*/
+#technology-section {
+  border-bottom: 1px solid $grey-color-light;
+}
+
+.tech-icons {
+
+  .tech-icons-group {
+    padding-bottom: 50px;
+    text-align: center;
+
+    .tech-icon {
+      padding-right: 20px;
+    }
+  }
+
+  .tech-icons-group-languages {
+    .tech-icon {
+      height: 100px;
+    }
+
+    .tech-icon-java {
+      height: 160px;
+    }
+  }
+
+  .tech-icons-group-frameworks {
+    .tech-icon {
+      height: 90px;
+    }
+
+    .tech-icon-spring {
+      height: 140px;
+    }
+  }
+
+  .tech-icons-group-databases {
+    .tech-icon {
+      height: 60px;
+    }
+  }
+
+  .tech-icons-group-other {
+    .tech-icon {
+      height: 60px;
+    }
+  }
+
+  .tech-icons-group-platforms {
+    .tech-icon {
+      height: 60px;
+    }
+  }
+}
+
+
+/*
+* contact-section
+*/
+.contact {
+  h3 {
+    text-align: center;
+    padding: 20px;
+  }
+
+  img {
+    margin: 0 auto;
+    display: block;
+  }
+
+  .contact-us-button {
+    text-align: center;
+  }
+}
+
+/*
+ * Others
+ */
+.margin-top-1x {
+  padding-top: 10px;
+}
+
+.section {
+  margin-bottom: 50px;
+}
