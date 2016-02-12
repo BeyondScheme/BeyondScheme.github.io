@@ -104,13 +104,12 @@ a.contact-button {
   background-color: $brand-color;
   text-decoration: none;
   font-size: 30px;
-  outline: 1px solid darken($brand-color, 15%);
   padding: 10px 15px;
+  border-radius: 4px;
 
   &:hover {
     color: $background-color;
     background-color: lighten($brand-color, 5%);
-    outline: 1px solid $brand-color;
   }
 }
 
