@@ -94,7 +94,7 @@ a {
 
   &:hover {
     color: $text-color;
-    text-decoration: underline;
+    text-decoration: none;
   }
 }
 
@@ -210,70 +210,77 @@ pre {
 
 #welcome-section {
   border-bottom: 1px solid $grey-color-light;
-}
-
-/*
-* who are we - section
-*/
-#who-are-we-section {
-  border-bottom: 1px solid $grey-color-light;
-}
-
-.text-align-center {
   text-align: center;
 }
 
-.text-align-justify {
-  text-align: justify;
-}
+/*
+* profile - section
+*/
+#profile-section {
+  border-bottom: 1px solid $grey-color-light;
 
-.profile-img {
-  display: block;
-  margin: auto;
-  width: 200px;
-  height: 200px;
-}
+  .text-align-center {
+    text-align: center;
+  }
 
-.container {
-  display: inline-block;
-}
+  .text-align-justify {
+    text-align: justify;
+  }
 
+  .profile-img {
+    display: block;
+    margin: auto;
+    width: 200px;
+    height: 200px;
+  }
 
-#column-left {
-  width: 33%;
-  float: left;
-}
+  .profile-name {
+    margin-top: 10px;
+    font-weight: bold;
+  }
 
-#column-center {
-  width: 33%;
-  float: left;
-}
+  .container {
+    display: inline-block;
+  }
 
-#column-right {
-  width: 33%;
-  float: left;
-}
-
-
-@media screen and (max-width: 800px) {
 
   #column-left {
-    width: auto;
-    float: none;
+    width: 33%;
+    float: left;
   }
 
   #column-center {
-    width: auto;
-    float: none;
-    margin-left: 0px;
+    width: 33%;
+    float: left;
   }
 
   #column-right {
-    width: auto;
-    float: none;
+    width: 33%;
+    float: left;
   }
 
+
+  @media screen and (max-width: 800px) {
+
+    #column-left {
+      width: auto;
+      float: none;
+    }
+
+    #column-center {
+      width: auto;
+      float: none;
+      margin-left: 0px;
+    }
+
+    #column-right {
+      width: auto;
+      float: none;
+    }
+
+  }
 }
+
 
 /*
 * how we work - section
