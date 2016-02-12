@@ -114,6 +114,12 @@ a.contact-button {
   }
 }
 
+a.page-link {
+  &:hover {
+    color: $brand-color;
+  }
+}
+
 /**
  * Blockquotes
  */
