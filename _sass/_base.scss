@@ -72,6 +72,7 @@ li {
  */
 h1, h2, h3, h4, h5, h6 {
   font-weight: $bold-font-weight;
+  color: $header-color;
 }
 
 h1.big {
@@ -211,6 +212,10 @@ pre {
 #welcome-section {
   border-bottom: 1px solid $grey-color-light;
   text-align: center;
+
+  h1, h2 {
+    font-weight: $normal-font-weight;
+  }
 }
 
 /*
@@ -236,7 +241,7 @@ pre {
 
   .profile-name {
     margin-top: 10px;
-    font-weight: $bold-font-weight;
+    font-weight: $normal-font-weight;
   }
 
   .container {
