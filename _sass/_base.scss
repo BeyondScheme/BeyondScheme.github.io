@@ -287,20 +287,26 @@ pre {
 
   @media screen and (max-width: 800px) {
 
-    #column-left {
+    .column-left {
       width: auto;
       float: none;
     }
 
-    #column-center {
+    .column-center {
       width: auto;
       float: none;
-      margin-left: 0px;
     }
 
-    #column-right {
+    .column-right {
       width: auto;
       float: none;
+    }
+
+    .profile-container-left,
+    .profile-container-center,
+    .profile-container-right
+    {
+      padding: 0;
     }
 
   }
