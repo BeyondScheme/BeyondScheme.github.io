@@ -382,14 +382,6 @@ pre {
         height: 45px;
       }
     }
-
-    .tech-icon-spring {
-      height: 140px;
-
-      @include media-query($on-laptop) {
-        height: 70px;
-      }
-    }
   }
 
   .tech-icons-group-databases {
