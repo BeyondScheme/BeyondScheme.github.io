@@ -224,7 +224,6 @@ pre {
 */
 
 #welcome-section {
-  border-bottom: 1px solid $grey-color-light;
   text-align: center;
 
   h1, h2 {
@@ -236,7 +235,6 @@ pre {
 * profile - section
 */
 #profile-section {
-  border-bottom: 1px solid $grey-color-light;
 
   .text-align-center {
     text-align: center;
@@ -304,14 +302,14 @@ pre {
 * how we work - section
 */
 #how-we-work-section {
-  border-bottom: 1px solid $grey-color-light;
+
 }
 
 /*
 * technology - section
 */
 #technology-section {
-  border-bottom: 1px solid $grey-color-light;
+
 }
 
 .tech-icons {
@@ -402,4 +400,8 @@ pre {
 
 .padding-10-px {
   padding: 10px;
+}
+
+.section-bottom-border {
+  border-bottom: 1px solid $grey-color-light;
 }
