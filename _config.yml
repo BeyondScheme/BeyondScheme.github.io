@@ -6,7 +6,7 @@
 # 'jekyll serve'. If you change this file, please restart the server process.
 
 # Site settings
-title: Beyond Scheme
+title: Beyond Scheme - web application development
 email: hello@beyondscheme.com
 description: > # this means to ignore newlines until "baseurl:"
   Yet another software developers, are we?
