@@ -336,48 +336,76 @@ pre {
     .tech-icon {
       padding-right: 20px;
     }
+
+    @include media-query($on-laptop) {
+      padding-bottom: 25px;
+    }
   }
 
   .tech-icons-group-languages {
     .tech-icon {
       height: 100px;
+
+      @include media-query($on-laptop) {
+        height: 50px;
+      }
     }
 
     .tech-icon-java {
       height: 160px;
+
+      @include media-query($on-laptop) {
+        height: 80px;
+      }
     }
   }
 
   .tech-icons-group-frameworks {
     .tech-icon {
       height: 90px;
+
+      @include media-query($on-laptop) {
+        height: 45px;
+      }
     }
 
     .tech-icon-spring {
       height: 140px;
+
+      @include media-query($on-laptop) {
+        height: 70px;
+      }
     }
   }
 
   .tech-icons-group-databases {
     .tech-icon {
       height: 60px;
+
+      @include media-query($on-laptop) {
+        height: 30px;
+      }
     }
 
     .tech-icon-oracle {
       height: 40px;
       margin-top: 20px;
+
+      @include media-query($on-laptop) {
+        height: 20px;
+        margin-top: 0;
+      }
     }
   }
 
-  .tech-icons-group-other {
-    .tech-icon {
-      height: 60px;
-    }
-  }
-
+  .tech-icons-group-other,
   .tech-icons-group-platforms {
     .tech-icon {
       height: 60px;
+
+      @include media-query($on-laptop) {
+        height: 30px;
+      }
     }
   }
 }
