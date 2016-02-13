@@ -320,8 +320,8 @@ pre {
   .specialization-header {
     img {
       display: inline-block;
-      width: 40px;
-      height: 40px;
+      max-width: 40px;
+      max-height: 40px;
     }
     h3 {
       display: inline-block;
