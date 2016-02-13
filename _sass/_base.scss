@@ -318,10 +318,8 @@ pre {
 */
 #how-we-work-section {
   .specialization-header {
-    img {
-      display: inline-block;
-      max-width: 40px;
-      max-height: 40px;
+    i {
+      vertical-align: middle;
     }
     h3 {
       display: inline-block;
