@@ -275,6 +275,19 @@ pre {
     float: left;
   }
 
+  .profile-container-left {
+    padding-right: 15px;
+  }
+
+  .profile-container-center {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .profile-container-right {
+    padding-left: 15px;
+  }
+
 
   @media screen and (max-width: 800px) {
 
@@ -395,7 +408,7 @@ pre {
 }
 
 .column-padding {
-  padding: 10px;
+  padding: 10px 0;
 }
 
 .section-bottom-border {
