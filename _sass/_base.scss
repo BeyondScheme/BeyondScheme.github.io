@@ -330,7 +330,7 @@ pre {
 .tech-icons {
 
   .tech-icons-group {
-    padding-bottom: 50px;
+    padding-bottom: 20px;
     text-align: center;
 
     .tech-icon {
@@ -344,7 +344,7 @@ pre {
 
   .tech-icons-group-languages {
     .tech-icon {
-      height: 100px;
+      height: 60px;
 
       @include media-query($on-laptop) {
         height: 50px;
@@ -352,7 +352,7 @@ pre {
     }
 
     .tech-icon-java {
-      height: 160px;
+      height: 100px;
 
       @include media-query($on-laptop) {
         height: 80px;
@@ -362,7 +362,7 @@ pre {
 
   .tech-icons-group-frameworks {
     .tech-icon {
-      height: 90px;
+      height: 60px;
 
       @include media-query($on-laptop) {
         height: 45px;
@@ -380,7 +380,7 @@ pre {
 
   .tech-icons-group-databases {
     .tech-icon {
-      height: 60px;
+      height: 50px;
 
       @include media-query($on-laptop) {
         height: 30px;
@@ -388,12 +388,10 @@ pre {
     }
 
     .tech-icon-oracle {
-      height: 40px;
-      margin-top: 20px;
+      height: 30px;
 
       @include media-query($on-laptop) {
         height: 20px;
-        margin-top: 0;
       }
     }
   }
@@ -401,7 +399,7 @@ pre {
   .tech-icons-group-other,
   .tech-icons-group-platforms {
     .tech-icon {
-      height: 60px;
+      height: 40px;
 
       @include media-query($on-laptop) {
         height: 30px;
