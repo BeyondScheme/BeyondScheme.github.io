@@ -317,6 +317,20 @@ pre {
 * how we work - section
 */
 #how-we-work-section {
+  .specialization-header {
+    img {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+    }
+    h3 {
+      display: inline-block;
+      margin-left: 5px;
+    }
+  }
+  p {
+    padding-top: 20px;
+  }
 
 }
 
