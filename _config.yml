@@ -6,10 +6,10 @@
 # 'jekyll serve'. If you change this file, please restart the server process.
 
 # Site settings
-title: Beyond Scheme - web application development in Ruby & Java
+title: Beyond Scheme - web application development in Ruby, Elixir & Java
 email: hello@beyondscheme.com
 description: > # this means to ignore newlines until "baseurl:"
-  We do Ruby on Rails and Java applications in Play! Framework or Spring MVC.
+  We do Ruby on Rails, Elixir apps in Phoenix Framework, Java applications in Play! Framework & Spring MVC.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://beyondscheme.com" # the base hostname & protocol for your site
 twitter_username: BeyondSchemeCom
