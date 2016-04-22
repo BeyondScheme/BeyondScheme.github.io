@@ -11,7 +11,7 @@ layout: default
         <span class="post-tag">{{ tag }}</span>
       {% endfor %}
       </span>
-      by <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{ page.author }}</span></span>
+      by <a href="/#profile-section"><span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{ page.author }}</span></span></a>
       on <time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ page.date | date: "%b %-d, %Y" }}</time>
     </p>
   </header>
