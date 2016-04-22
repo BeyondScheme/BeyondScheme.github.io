@@ -22,6 +22,10 @@ layout: default
         by <a href="/#profile-section"><span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{ post.author }}</span></span></a>
         on <time datetime="{{ post.date | date_to_xmlschema }}" itemprop="datePublished">{{ post.date | date: "%b %-d, %Y" }}</time>
       </p>
+
+      <p>{{ post.excerpt }}</p>
+
+      <p class="text-right"><a href="{{ post.url | prepend: site.baseurl }}">continue reading →</a></p>
     </li>
   {% endfor %}
 </ul>
