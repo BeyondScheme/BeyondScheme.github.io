@@ -257,3 +257,19 @@
   border-radius: 10px;
   margin-right: 5px;
 }
+
+.share-post-container {
+  .share-post-left {
+    float: left;
+
+    .fb-share-button {
+      //margin-top: -10px;
+      position: relative;
+      top: -6px;
+    }
+  }
+
+  .share-post-right {
+    float: right;
+  }
+}
