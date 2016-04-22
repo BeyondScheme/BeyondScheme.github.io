@@ -14,6 +14,8 @@ layout: default
       by <a href="/#profile-section"><span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{ page.author }}</span></span></a>
       on <time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ page.date | date: "%b %-d, %Y" }}</time>
     </p>
+
+    <div class="fb-share-button" data-href="{{ page.url | prepend: site.url }}" data-layout="button_count" data-mobile-iframe="true"></div>
   </header>
 
   <div class="post-content" itemprop="articleBody">
