@@ -21,6 +21,7 @@ layout: default
         </span>
         by <a href="/#profile-section"><span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{ post.author }}</span></span></a>
         on <time datetime="{{ post.date | date_to_xmlschema }}" itemprop="datePublished">{{ post.date | date: "%b %-d, %Y" }}</time>
+        • <span class="disqus-comment-count" data-disqus-identifier="{{ post.url | prepend: site.url }}"></span>
       </p>
 
       <p>{{ post.excerpt }}</p>
