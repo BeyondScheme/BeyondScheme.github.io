@@ -244,3 +244,16 @@
     }
   }
 }
+
+.post-tags {
+  margin-right: 5px;
+}
+
+.post-tag {
+  background: $brand-color;
+  color: white;
+  font-weight: $normal-font-weight;
+  padding: 3px 5px;
+  border-radius: 10px;
+  margin-right: 5px;
+}
