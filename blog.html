@@ -1,0 +1,32 @@
+---
+layout: default
+---
+
+<h1 class="big double-bold">Engineering Blog</h1>
+
+<p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></p>
+
+<ul class="post-list">
+  {% for post in site.posts %}
+    <li>
+      <h2>
+        <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+      </h2>
+
+      <p class="post-meta">
+        <span class="post-tags">
+        {% for tag in post.tags %}
+          <span class="post-tag">{{ tag }}</span>
+        {% endfor %}
+        </span>
+        by <a href="/#profile-section"><span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{ post.author }}</span></span></a>
+        on <time datetime="{{ post.date | date_to_xmlschema }}" itemprop="datePublished">{{ post.date | date: "%b %-d, %Y" }}</time>
+        • <span class="disqus-comment-count" data-disqus-identifier="{{ post.url | prepend: site.url }}"></span>
+      </p>
+
+      <p>{{ post.excerpt }}</p>
+
+      <p class="text-right"><a href="{{ post.url | prepend: site.baseurl }}">continue reading →</a></p>
+    </li>
+  {% endfor %}
+</ul>

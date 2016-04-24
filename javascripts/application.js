@@ -21,10 +21,12 @@ window.BeyondScheme = {
 // binding
 $(document).ready(function() {
 
-  $('.x-scroll-link').click(function(e) {
-    e.preventDefault();
-    var href = $(this).attr('href');
-    window.BeyondScheme.goToByScroll(href, 0, 0);
+  $('.x-scroll-contact').click(function(e) {
+    // scroll smoothly to contact section when on homepage
+    if (window.location.pathname == "/") {
+      e.preventDefault();
+      window.BeyondScheme.goToByScroll("#contact-section", 0, 0);
+    }
   });
 
 });
