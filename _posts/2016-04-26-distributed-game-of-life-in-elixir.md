@@ -275,3 +275,7 @@ defp neighbours([], neighbours), do: neighbours
 {% endhighlight %}
 
 Basically, those are all rules implemented in the single module `GameOfLife.Cell`. You can see the whole [module file](https://github.com/BeyondScheme/elixir-game_of_life/blob/master/lib/game_of_life/cell.ex) with [tests on GitHub](https://github.com/BeyondScheme/elixir-game_of_life/blob/master/test/game_of_life/cell_test.exs).
+
+# Architecture of distributed Game of Life
+
+<img src="/images/blog/posts/distributed-game-of-life-in-elixir/supervisor.jpg" />
