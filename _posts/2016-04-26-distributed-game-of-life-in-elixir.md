@@ -65,3 +65,20 @@ defmodule GameOfLife do
   end
 end
 {% endhighlight %}
+
+# Represent the board in Game of Life
+
+We need to represent the alive cells on the board in our game. A single cell can be a tuple `{x, y}` with coordinates in the 2-dimensional board.
+
+All alive cells on the board will be in the list `alive_cells`.
+
+{% highlight elixir %}
+alive_cells = [{0, 0}, {1, 0}, {2, 0}, {1, 1}, {-1,-2}]
+{% endhighlight %}
+
+Here is example how this board with alive cells looks like:
+
+| | | {1, 1} | 
+| | {0, 0} | {1, 0} | {2, 0}
+| | | | 
+{-1, -2} | | |
