@@ -14,7 +14,7 @@ __What I'm going to show you is:__
 * How to write Elixir simple rules for game of life with tests
 * Parallel jobs across actors so we utilize all CPU cores
 * How to distribute work across nodes so the game can be executed by many servers in the cluster
-* How to use GenServer, TaskSupervisor, Tasks and Agents in Elixir
+* How to use GenServer, TaskSupervisor and Agents in Elixir
 
 This is a very simple project and if you find yourself more experience please share your comments how to improve the code described here. The full [source code can be found here](https://github.com/BeyondScheme/elixir-game_of_life). Thanks!
 
