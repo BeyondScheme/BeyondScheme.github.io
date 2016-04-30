@@ -88,7 +88,7 @@ Now when we have idea how we are going to store our alive cells we can jump to w
 
 # Game of Life rules with tests
 
-We can create `GameOfLife.Cell` module with function `keep_alive?` responsitble for determine if particular alive cell `{x, y}` should be still alive on the next generation or not.
+We can create `GameOfLife.Cell` module with function `keep_alive?/2` responsitble for determine if particular alive cell `{x, y}` should be still alive on the next generation or not.
 
 Here is the function with expected arguments:
 
@@ -105,7 +105,7 @@ Let's write some tests to cover first of the requirement of the game of life.
 
 > Any live cell with fewer than two live neighbours dies, as if caused by under-population.
 
-We wrote tests to ensure `keep_alive?` function returns false in case when alive cell has no neighbours or has just one.
+We wrote tests to ensure `GameOfLife.Cell.keep_alive?/2` function returns false in case when alive cell has no neighbours or has just one.
 
 {% highlight elixir %}
 # test/game_of_life/cell_test.exs
@@ -126,7 +126,7 @@ defmodule GameOfLife.CellTest do
 end
 {% endhighlight %}
 
-`GameOfLife.Cell.keep_alive?` function needs to return false just to pass our tests so let's add more tests to cover other requirements.
+`GameOfLife.Cell.keep_alive?/2` function needs to return false just to pass our tests so let's add more tests to cover other requirements.
 
 > Any live cell with more than three live neighbours dies, as if by over-population.
 
@@ -156,7 +156,7 @@ test "alive cell with 3 neighbours lives" do
 end
 {% endhighlight %}
 
-Now we can implement our `keep_alive?` function.
+Now we can implement our `GameOfLife.Cell.keep_alive?/2` function.
 
 {% highlight elixir %}
 # lib/game_of_life/cell.ex
@@ -191,13 +191,13 @@ defmodule GameOfLife.Cell do
 end
 {% endhighlight %}
 
-As you can see we implemented private function `count_neighbours` responsible for counting neighbours. It will be helpful later.
+As you can see we implemented private function `count_neighbours/4` responsible for counting neighbours. It will be helpful later.
 
 There is one more requirement we forogot which is:
 
 > Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
 
-We are going to write a new function `become_alive?` expecting coordinates of dead cell and returning if the dead cell should become alive or not.
+We are going to write a new function `GameOfLife.Cell.become_alive?/2` expecting coordinates of dead cell and returning if the dead cell should become alive or not.
 
 {% highlight elixir %}
 # lib/game_of_life/cell.ex
