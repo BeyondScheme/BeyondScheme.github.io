@@ -279,3 +279,49 @@ Basically, those are all rules implemented in the single module `GameOfLife.Cell
 # Architecture of distributed Game of Life
 
 <img src="/images/blog/posts/distributed-game-of-life-in-elixir/supervisor.jpg" />
+
+Our main supervisor is `GameOfLife.Supervisor` which I mentioend at the begining of the article. Here you can see how we defined its childrens like `Task.Supervisor` or workers for `BoardServer` and `GamePrinter`.
+
+{% highlight elixir %}
+# lib/game_of_life.ex
+defmodule GameOfLife do
+  use Application
+
+  # See http://elixir-lang.org/docs/stable/elixir/Application.html
+  # for more information on OTP Applications
+  def start(_type, _args) do
+    import Supervisor.Spec, warn: false
+
+    init_alive_cells = []
+
+    children = [
+      # Define workers and child supervisors to be supervised
+      # worker(GameOfLife.Worker, [arg1, arg2, arg3]),
+      supervisor(Task.Supervisor, [[name: GameOfLife.TaskSupervisor]]),
+      worker(GameOfLife.BoardServer, [init_alive_cells]),
+      worker(GameOfLife.GamePrinter, []),
+    ]
+
+    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
+    # for other strategies and supported options
+    opts = [strategy: :one_for_one, name: GameOfLife.Supervisor]
+    Supervisor.start_link(children, opts)
+  end
+end
+{% endhighlight %}
+
+Let me describe you what each component on the image is responsible for.
+
+* `Task.Supervisor` is Elixir module which defines a new supervisor which can be used to dynamically supervise tasks. We are going to use it to spin off tasks like determining if the particular cell should live or die etc. Those tasks can be run across nodes connected into the cluster. In above code, we gave name `GameOfLife.TaskSupervisor` for our supervisor. We will use this name to tell `Task.Supervisor.async` function which Task Supervisor should handle our task. You can read more about [Task.Supervisor here](http://elixir-lang.org/docs/stable/elixir/Task.Supervisor.html).
+
+* `GameOfLife.BoardServer` is our module implemented as [GenServer behaviour](http://elixir-lang.org/docs/stable/elixir/GenServer.html). It's responsible for holding the state of the game. By that I mean it keeps the list of alive cells on the board along with generation counter and TRef. TRef is a timer reference as we want to be able to start the game and generate a new list of alive cells for next generation of the game. With each new generation, we will update generation counter. The other interesting thing is that `GameOfLife.BoardServer` is running only on single node. Once another node is connected to cluster where is already running `GameOfLife.BoardServer` then the second `GameOfLife.BoardServer` won't be started as we want to have the single source of truth about the state of our game.
+
+* `GameOfLife.GamePrinter` is a simple module using [Agent](http://elixir-lang.org/docs/stable/elixir/Agent.html) in order to keep TRef (time reference) so we can print board to STDOUT with specified interval. We will use [Erlang timer module](http://erlang.org/doc/man/timer.html#apply_interval-4) to print board on the screen every second.
+
+You may wonder what's the difference between GenServer and Agent.
+
+A GenServer is a process like any other Elixir process and it can be used to keep state, execute code asynchronously and so on. The advantage of using a generic server process (GenServer) is that it will have a standard set of interface functions and include functionality for tracing and error reporting. It also fits into a supervision tree as this is what we did in `GameOfLife` module.
+
+Agent on the other hand is much simpler solution than GenServer. Agents are a simple abstraction around state.
+Often in Elixir there is a need to share or store state that must be accessed from different processes or by the same process at different points in time. The Agent module provides a basic server implementation that allows state to be retrieved and updated via a simple API.
+This is what we are going to do in `GameOfLife.GamePrinter` as we need only keep time reference to our timer interval.
