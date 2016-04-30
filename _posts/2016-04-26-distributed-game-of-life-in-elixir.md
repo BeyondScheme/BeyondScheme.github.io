@@ -746,3 +746,17 @@ end
 It works similarly as `GameOfLife.Board.keep_alive_tick/1`. First, we are looking for dead neighbours for alive cells and then for each dead cell we create a new process across nodes in the cluster to determine if the dead cell should become alive in next generation.
 
 You can see the full source code of [GameOfLife.Board module](https://github.com/BeyondScheme/elixir-game_of_life/blob/master/lib/game_of_life/board.ex) and [tests on github](https://github.com/BeyondScheme/elixir-game_of_life/blob/master/test/game_of_life/board_test.exs).
+
+# Create game printer and console presenter
+
+TODO
+
+# Add figure patterns and place them on the board
+
+TODO
+
+# Run game across multiple nodes
+
+TODO
+
+# Summary
