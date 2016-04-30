@@ -85,3 +85,110 @@ and here are proper x & y coordinates:
 <img src="/images/blog/posts/distributed-game-of-life-in-elixir/board_cells_xy.jpg" />
 
 Now when we have idea how we are going to store our alive cells we can jump to write some code.
+
+# Game of Life rules with tests
+
+We can create `GameOfLife.Cell` module with function `keep_alive?` responsitble for determine if particular alive cell `{x, y}` should be still alive on the next generation or not.
+
+Here is the function with expected arguments:
+
+{% highlight elixir %}
+# lib/game_of_life/cell.ex
+defmodule GameOfLife.Cell do
+  def keep_alive?(alive_cells, {x, y} = _alive_cell) do
+    # TODO
+  end
+end
+{% endhighlight %}
+
+Let's write some tests to cover first of the requirement of the game of life.
+
+> Any live cell with fewer than two live neighbours dies, as if caused by under-population.
+
+We wrote tests to ensure `keep_alive?` function returns false in case when alive cell has no neighbours or has just one.
+
+{% highlight elixir %}
+# test/game_of_life/cell_test.exs
+defmodule GameOfLife.CellTest do
+  use ExUnit.Case, async: true
+
+  test "alive cell with no neighbours dies" do
+    alive_cell = {1, 1}
+    alive_cells = [alive_cell]
+    refute GameOfLife.Cell.keep_alive?(alive_cells, alive_cell)
+  end
+
+  test "alive cell with 1 neighbour dies" do
+    alive_cell = {1, 1}
+    alive_cells = [alive_cell, {0, 0}]
+    refute GameOfLife.Cell.keep_alive?(alive_cells, alive_cell)
+  end
+end
+{% endhighlight %}
+
+`GameOfLife.Cell.keep_alive?` function needs to return false just to pass our tests so let's add more tests to cover other requirements.
+
+> Any live cell with more than three live neighbours dies, as if by over-population.
+
+{% highlight elixir %}
+# test/game_of_life/cell_test.exs
+test "alive cell with more than 3 neighbours dies" do
+  alive_cell = {1, 1}
+  alive_cells = [alive_cell, {0, 0}, {1, 0}, {2, 0}, {1, 0}]
+  refute GameOfLife.Cell.keep_alive?(alive_cells, alive_cell)
+end
+{% endhighlight %}
+
+> Any live cell with two or three live neighbours lives on to the next generation.
+
+{% highlight elixir %}
+# test/game_of_life/cell_test.exs
+test "alive cell with 2 neighbours lives" do
+  alive_cell = {1, 1}
+  alive_cells = [alive_cell, {0, 0}, {1, 0}]
+  assert GameOfLife.Cell.keep_alive?(alive_cells, alive_cell)
+end
+
+test "alive cell with 3 neighbours lives" do
+  alive_cell = {1, 1}
+  alive_cells = [alive_cell, {0, 0}, {1, 0}, {2, 1}]
+  assert GameOfLife.Cell.keep_alive?(alive_cells, alive_cell)
+end
+{% endhighlight %}
+
+Now we can implement our `keep_alive?` function.
+
+{% highlight elixir %}
+# lib/game_of_life/cell.ex
+defmodule GameOfLife.Cell do
+  def keep_alive?(alive_cells, {x, y} = _alive_cell) do
+    case count_neighbours(alive_cells, x, y, 0) do
+      2 -> true
+      3 -> true
+      _ -> false
+    end
+  end
+
+  defp count_neighbours([head_cell | tail_cells], x, y, count) do
+    increment = case head_cell do
+      {hx, hy} when hx == x - 1 and hy == y - 1 -> 1
+      {hx, hy} when hx == x     and hy == y - 1 -> 1
+      {hx, hy} when hx == x + 1 and hy == y - 1 -> 1
+
+      {hx, hy} when hx == x - 1 and hy == y     -> 1
+      {hx, hy} when hx == x + 1 and hy == y     -> 1
+
+      {hx, hy} when hx == x - 1 and hy == y + 1 -> 1
+      {hx, hy} when hx == x     and hy == y + 1 -> 1
+      {hx, hy} when hx == x + 1 and hy == y + 1 -> 1
+
+      _not_neighbour -> 0
+    end
+    count_neighbours(tail_cells, x, y, count + increment)
+  end
+
+  defp count_neighbours([], _x, _y, count), do: count
+end
+{% endhighlight %}
+
+As you can see we implemented private function `count_neighbours` responsible for counting neighbours. It will be helpful later.
