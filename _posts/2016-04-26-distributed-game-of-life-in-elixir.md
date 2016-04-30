@@ -192,3 +192,35 @@ end
 {% endhighlight %}
 
 As you can see we implemented private function `count_neighbours` responsible for counting neighbours. It will be helpful later.
+
+There is one more requirement we forogot which is:
+
+> Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+
+We are going to write a new function `become_alive?` expecting coordinates of dead cell and returning if the dead cell should become alive or not.
+
+{% highlight elixir %}
+# lib/game_of_life/cell.ex
+defmodule GameOfLife.Cell do
+  def become_alive?(alive_cells, {x, y} = _dead_cell) do
+    3 == count_neighbours(alive_cells, x, y, 0)
+  end
+end
+{% endhighlight %}
+
+And here is test for that:
+
+{% highlight elixir %}
+# test/game_of_life/cell_test.exs
+test "dead cell with three live neighbours becomes a live cell" do
+  alive_cells = [{2, 2}, {1, 0}, {2, 1}]
+  dead_cell = {1, 1}
+  assert GameOfLife.Cell.become_alive?(alive_cells, dead_cell)
+end
+
+test "dead cell with two live neighbours stays dead" do
+  alive_cells = [{2, 2}, {1, 0}]
+  dead_cell = {1, 1}
+  refute GameOfLife.Cell.become_alive?(alive_cells, dead_cell)
+end
+{% endhighlight %}
