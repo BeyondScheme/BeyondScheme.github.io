@@ -16,7 +16,7 @@ __What I'm going to show you is:__
 * How to distribute work across nodes so the game can be executed by many servers in the cluster
 * How to use TaskSupervisor, Tasks and Agents in Elixir
 
-> This is a very simple project and if you find yourself more experience please share your comments how to improve the code described here. Thanks!
+This is a very simple project and if you find yourself more experience please share your comments how to improve the code described here. Thanks!
 
 # Just intro to Game of Life rules
 
