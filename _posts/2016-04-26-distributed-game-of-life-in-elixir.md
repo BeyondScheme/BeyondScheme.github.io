@@ -78,7 +78,10 @@ alive_cells = [{0, 0}, {1, 0}, {2, 0}, {1, 1}, {-1,-2}]
 
 Here is example how this board with alive cells looks like:
 
-| | | {1, 1} | 
-| | {0, 0} | {1, 0} | {2, 0}
-| | | | 
-{-1, -2} | | |
+<img src="/images/blog/posts/distributed-game-of-life-in-elixir/board_cells.jpg" />
+
+and here are proper x & y coordinates:
+
+<img src="/images/blog/posts/distributed-game-of-life-in-elixir/board_cells_xy.jpg" />
+
+Now when we have idea how we are going to store our alive cells we can jump to write some code.
