@@ -224,3 +224,54 @@ test "dead cell with two live neighbours stays dead" do
   refute GameOfLife.Cell.become_alive?(alive_cells, dead_cell)
 end
 {% endhighlight %}
+
+There is one more thing which might be helpful for us. We have the list of alive cells but we don't know much about dead cells. The number of dead cells is infinity so we need to cut down for which dead cells we want to check if they should become alive. The simple way would be to check only dead cells with alive neighbours. Hence the `GameOfLife.Cell.dead_neighbours/1` function.
+
+Let's write some tests first:
+
+{% highlight elixir %}
+# test/game_of_life/cell_test.exs
+test "find dead cells (neighbours of alive cell)" do
+  alive_cells = [{1, 1}]
+  dead_neighbours = GameOfLife.Cell.dead_neighbours(alive_cells) |> Enum.sort
+  expected_dead_neighbours = [
+    {0, 0}, {1, 0}, {2, 0},
+    {0, 1}, {2, 1},
+    {0, 2}, {1, 2}, {2, 2}
+  ] |> Enum.sort
+  assert dead_neighbours == expected_dead_neighbours
+end
+
+test "find dead cells (neighbours of alive cells)" do
+  alive_cells = [{1, 1}, {2, 1}]
+  dead_neighbours = GameOfLife.Cell.dead_neighbours(alive_cells) |> Enum.sort
+  expected_dead_neighbours = [
+    {0, 0}, {1, 0}, {2, 0}, {3, 0},
+    {0, 1}, {3, 1},
+    {0, 2}, {1, 2}, {2, 2}, {3, 2}
+  ] |> Enum.sort
+  assert dead_neighbours == expected_dead_neighbours
+end
+{% endhighlight %}
+
+and here is the implemented function:
+
+{% highlight elixir %}
+# lib/game_of_life/cell.ex
+def dead_neighbours(alive_cells) do
+  neighbours = neighbours(alive_cells, [])
+  (neighbours |> Enum.uniq) -- alive_cells
+end
+
+defp neighbours([{x, y} | cells], neighbours) do
+  neighbours(cells, neighbours ++ [
+    {x - 1, y - 1}, {x    , y - 1}, {x + 1, y - 1},
+    {x - 1, y    }, {x + 1, y    },
+    {x - 1, y + 1}, {x    , y + 1}, {x + 1, y + 1}
+  ])
+end
+
+defp neighbours([], neighbours), do: neighbours
+{% endhighlight %}
+
+Basically, those are all rules implemented in the single module `GameOfLife.Cell`. You can see the whole [module file](https://github.com/BeyondScheme/elixir-game_of_life/blob/master/lib/game_of_life/cell.ex) with [tests on GitHub](https://github.com/BeyondScheme/elixir-game_of_life/blob/master/test/game_of_life/cell_test.exs).
