@@ -30,3 +30,38 @@ The universe of the Game of Life is an infinite two-dimensional orthogonal grid 
 * Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
 
 The initial pattern constitutes the seed of the system. The first generation is created by applying the above rules simultaneously to every cell in the seed—births and deaths occur simultaneously, and the discrete moment at which this happens is sometimes called a tick (in other words, each generation is a pure function of the preceding one). The rules continue to be applied repeatedly to create further generations.
+
+# Create new application in Elixir
+
+First thing first so we are going to create a new Elixir OTP application with supervision tree. We will use supervisor for our game server, you will learn more about it a bit later.
+
+{% highlight plain %}
+$ mix new --sup game_of_life
+{% endhighlight %}
+
+A `--sup` option is given to generate an OTP application skeleton including a supervision tree. Normally an app is generated without a supervisor and without the app callback.
+
+In `lib/game_of_life.ex` file you will find example how to add child worker to supervisor.
+
+{% highlight elixir %}
+# lib/game_of_life.ex
+defmodule GameOfLife do
+  use Application
+
+  # See http://elixir-lang.org/docs/stable/elixir/Application.html
+  # for more information on OTP Applications
+  def start(_type, _args) do
+    import Supervisor.Spec, warn: false
+
+    children = [
+      # Define workers and child supervisors to be supervised
+      # worker(GameOfLife.Worker, [arg1, arg2, arg3]),
+    ]
+
+    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
+    # for other strategies and supported options
+    opts = [strategy: :one_for_one, name: GameOfLife.Supervisor]
+    Supervisor.start_link(children, opts)
+  end
+end
+{% endhighlight %}
