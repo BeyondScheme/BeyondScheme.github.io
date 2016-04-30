@@ -603,3 +603,22 @@ keep_alive_task = Task.Supervisor.async(
 {% endhighlight %}
 
 The tuple `{GameOfLife.TaskSupervisor, GameOfLife.NodeManager.random_node}` tells `Task.Supervisor` that we want to use task supervisor with the name `GameOfLife.TaskSupervisor` and we want to run the process on the node returned by `GameOfLife.NodeManager.random_node` function.
+
+# Create node manager for task supervisor
+
+Let's start with something simple just to see if we can distribute work across nodes in the cluster. We assume each new process created by task supervisor will be assigned randomly to one of the connected nodes. Each node should be equally overloaded with the assumption that each task is pretty similar and all nodes are machines with the same configuration and overload.
+
+{% highlight elixir %}
+# lib/game_of_life/node_manager.ex
+defmodule GameOfLife.NodeManager do
+  def all_nodes do
+    [Node.self | Node.list]
+  end
+
+  def random_node do
+    all_nodes |> Enum.random
+  end
+end
+{% endhighlight %}
+
+Our node manager has `random_node/0` function which returns the name of a random node connected to the cluster. Basically, that's it. Simple solution should be enough for now.
