@@ -322,7 +322,7 @@ You may wonder what's the difference between GenServer and Agent.
 
 A GenServer is a process like any other Elixir process and it can be used to keep state, execute code asynchronously and so on. The advantage of using a generic server process (GenServer) is that it will have a standard set of interface functions and include functionality for tracing and error reporting. It also fits into a supervision tree as this is what we did in `GameOfLife` module.
 
-Agent on the other hand is much simpler solution than GenServer. Agents are a simple abstraction around state.
+Agent, on the other hand, is much simpler solution than GenServer. Agents are a simple abstraction around state.
 Often in Elixir there is a need to share or store state that must be accessed from different processes or by the same process at different points in time. The Agent module provides a basic server implementation that allows state to be retrieved and updated via a simple API.
 This is what we are going to do in `GameOfLife.GamePrinter` as we need only keep time reference to our timer interval.
 
@@ -398,17 +398,17 @@ end
 
 As you can see we use `GenServer` behaviour in our module. I require also Logger as we would like to print some info to the STDOUT.
 
-In `start_link/1` function we start new `GenServer`. When our generic server was started as a first process in the cluster then it becomes master process. In case when there is already running process with global registered name `{:global, __MODULE__}` we log info that our process will be a slave process with a reference to existing PID on another node in the cluster.
+In `start_link/1` function we start new `GenServer`. When our generic server was started as a first process in the cluster then it becomes master process. In the case when there is already running process with globally registered name `{:global, __MODULE__}` we log info that our process will be a slave process with a reference to existing PID on another node in the cluster.
 
 As you see we store global name for our server in attribute `@name`. We use another attribute `@game_speed` for default game speed which is 1000 miliseconds.
 
-In our public interface we have `alive_cells/1` function which returns list of alive cells. Basically, it's the current state of the game (alive cells on the board). This function calls `GenServer` with registered `@name` and request `:alive_cells`. We need to implement `handle_call/3` function for this type of request (`:alive_cells`).
+In our public interface, we have `alive_cells/1` function which returns the list of alive cells. Basically, it's the current state of the game (alive cells on the board). This function calls `GenServer` with registered `@name` and request `:alive_cells`. We need to implement `handle_call/3` function for this type of request (`:alive_cells`).
 
-There is another public function `generation_counter/1` which returns how many generation was already processed by board server.
+There is another public function `generation_counter/1` which returns how many generations was already processed by board server.
 
-The `state/1` function returns state that is hold by our generic server. The state is represented as tuple with 3 values like alive cells, TRef (time reference - we want to regenerate board every second) and generation counter. TRef is very internal thing for board server so we won't return this to outside world. That's why we will return just alive cells and generation counter. You will see it later in implementation for `handle_call(:state, _from, state)`.
+The `state/1` function returns state that is held by our generic server. The state is represented as the tuple with 3 values like alive cells, TRef (time reference - we want to regenerate board every second) and generation counter. TRef is very internal thing for board server so we won't return this to outside world. That's why we will return just alive cells and generation counter. You will see it later in implementation for `handle_call(:state, _from, state)`.
 
-You can use `set_alive_cells/1` function in case when you want to override current list of alive cells with a new list.
+You can use `set_alive_cells/1` function in the case when you want to override current list of alive cells with a new list.
 
 The `add_cells/1` function will be very usefull as we want to be able to add new cells or figures to the board. For instance we may want to add a blinker pattern to existing game. You will learn more about patterns later.
 
@@ -416,9 +416,9 @@ The `add_cells/1` function will be very usefull as we want to be able to add new
 
 We can manually force game to calculate next generation of cells with `tick/1` function.
 
-The `start_game/1` function is responsible for starting new timer which calls every second a `tick/1` function. Thanks to that our game will update list of alive cells with specified interval which is `@game_speed`.
+The `start_game/1` function is responsible for starting a new timer which calls every second a `tick/1` function. Thanks to that our game will update list of alive cells with specified interval which is `@game_speed`.
 
-The last 2 functions are `stop_game/1` and `change_speed/1` which just restart game and starts new one with provided speed.
+The last 2 functions are `stop_game/1` and `change_speed/1` which just restart the game and starts a new one with provided speed.
 
 Now you can take a look how above functions are working exactly because they are calling server callbacks.
 
@@ -487,7 +487,7 @@ defmodule GameOfLife.BoardServer do
 end
 {% endhighlight %}
 
-Oh, we forgot about tests. In this case we can use [DocTest](http://elixir-lang.org/docs/stable/ex_unit/ExUnit.DocTest.html). It allows us to generate tests from the code examples existing in a module/function/macro’s documentation.
+Oh, we forgot about tests. In this case, we can use [DocTest](http://elixir-lang.org/docs/stable/ex_unit/ExUnit.DocTest.html). It allows us to generate tests from the code examples existing in a module/function/macro’s documentation.
 
 Our test file is super short.
 
@@ -545,7 +545,7 @@ defmodule GameOfLife.BoardServer do
 end
 {% endhighlight %}
 
-As you can see we have grouped 3 examples in `@moduledoc` attribue and they are separated by new line. When you will run tests you will see 3 separate test.
+As you can see we have grouped 3 examples in `@moduledoc` attribute and they are separated by new line. When you will run tests you will see 3 separate test.
 
 {% highlight plain %}
 $ mix test test/game_of_life/board_server_test.exs
@@ -570,7 +570,7 @@ def handle_call({:add_cells, cells}, _from, {alive_cells, tref, generation_count
 end
 {% endhighlight %}
 
-We will add some useful func `GameOfLife.Board` module which help us do operations on the list of alive cells.
+We will add some useful function `GameOfLife.Board` module which helps us do operations on the list of alive cells.
 
 Another thing you noticed is how we use `Task.Supervisor` in:
 
@@ -593,7 +593,7 @@ def handle_cast(:tick, {alive_cells, tref, generation_counter}) do
   end
 {% endhighlight %}
 
-What we are doing here is spining off a new async process to run `GameOfLife.keep_alive_tick/1` function with argument `alive_cells`.
+What we are doing here is spinning off a new async process to run `GameOfLife.keep_alive_tick/1` function with argument `alive_cells`.
 
 {% highlight elixir %}
 # lib/game_of_life/board_server.ex
