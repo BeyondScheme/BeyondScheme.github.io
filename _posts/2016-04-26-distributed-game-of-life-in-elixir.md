@@ -1044,7 +1044,7 @@ iex(node2@Artur)4> GameOfLife.Patterns.Guns.gosper_glider |> GameOfLife.BoardSer
  {12, 0}, {13, 0}]
 {% endhighlight %}
 
-Both nodes are executing calculation to determine a new state for living cells. You can run game also across diferrent servers. You can do that like that:
+Both nodes are executing calculation to determine a new state for living cells. You can run game also across diferrent servers in the network. You can do that like that:
 
 {% highlight plain %}
 # start node1
