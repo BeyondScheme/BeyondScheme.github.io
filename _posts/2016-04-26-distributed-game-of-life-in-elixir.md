@@ -7,9 +7,9 @@ categories: elixir
 tags: elixir distributed game
 ---
 
-<img src="/images/blog/posts/distributed-game-of-life-in-elixir/game_of_life_logo.png" style="float:right;" />
-
 I wrote my first game in Elixir. It's a common thing - Game of Life - but it's a bit different when you solve it in a functional language, especially when you can see how actor model works.
+
+<img src="/images/blog/posts/distributed-game-of-life-in-elixir/game_of_life_logo.png" style="float:right;margin-left:20px;" />
 
 __What I'm going to show you is:__
 
@@ -18,7 +18,7 @@ __What I'm going to show you is:__
 * How to distribute work across nodes so the game can be executed by many servers in the cluster
 * How to use GenServer, TaskSupervisor and Agents in Elixir
 
-This is a very simple project and if you find yourself more experience please share your comments how to improve the code described here. The full [source code can be found here](https://github.com/BeyondScheme/elixir-game_of_life). Thanks!
+This is a very simple project and the full [source code can be found here](https://github.com/BeyondScheme/elixir-game_of_life).
 
 # Demo
 
