@@ -18,6 +18,12 @@ __What I'm going to show you is:__
 
 This is a very simple project and if you find yourself more experience please share your comments how to improve the code described here. The full [source code can be found here](https://github.com/BeyondScheme/elixir-game_of_life). Thanks!
 
+# Demo
+
+Let's start with watching quick demo how the game works. As you see we started node1 where the game is running and board is printed on the screen. We started also the second node and connected it to the first one. From the second node, we added new cells to the board. Both nodes are responsible for processing the game but only the first node is a master with info about the current state of the game.
+
+<script type="text/javascript" src="https://asciinema.org/a/44233.js" id="asciicast-44233" async></script>
+
 # Just intro to Game of Life rules
 
 If you haven't heard about [game of life problem](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) then here is basic concept. If you already know it, just jump to next header.
