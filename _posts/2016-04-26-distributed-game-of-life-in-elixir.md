@@ -111,7 +111,7 @@ defmodule GameOfLife.Cell do
 end
 {% endhighlight %}
 
-Let's write some tests to cover first of the requirement of the game of life.
+Let's write some tests to cover first of the requirement of the Game of Life.
 
 > Any live cell with fewer than two live neighbours dies, as if caused by under-population.
 
@@ -290,7 +290,7 @@ Basically, those are all rules implemented in the single module `GameOfLife.Cell
 
 <img src="/images/blog/posts/distributed-game-of-life-in-elixir/supervisor.jpg" />
 
-Our main supervisor is `GameOfLife.Supervisor` which I mentioend at the begining of the article. Here you can see how we defined its childrens like `Task.Supervisor` or workers for `BoardServer` and `GamePrinter`.
+Our main supervisor is `GameOfLife.Supervisor` which I mentioned at the begining of the article. Here you can see how we defined its childrens like `Task.Supervisor`, workers for `BoardServer` and `GamePrinter`.
 
 {% highlight elixir %}
 # lib/game_of_life.ex
@@ -322,11 +322,11 @@ end
 
 Let me describe you what each component on the image is responsible for.
 
-* `Task.Supervisor` is Elixir module which defines a new supervisor which can be used to dynamically supervise tasks. We are going to use it to spin off tasks like determining if the particular cell should live or die etc. Those tasks can be run across nodes connected into the cluster. In above code, we gave name `GameOfLife.TaskSupervisor` for our supervisor. We will use this name to tell `Task.Supervisor.async` function which Task Supervisor should handle our task. You can read more about [Task.Supervisor here](http://elixir-lang.org/docs/stable/elixir/Task.Supervisor.html).
+* `Task.Supervisor` is Elixir module defining a new supervisor which can be used to dynamically supervise tasks. We are going to use it to spin off tasks like determining if the particular cell should live or die. Those tasks can be run across nodes connected into the cluster. In above code, we gave name `GameOfLife.TaskSupervisor` for our supervisor. We will use this name to tell `Task.Supervisor.async` function which Task Supervisor should handle our task. You can read more about [Task.Supervisor here](http://elixir-lang.org/docs/stable/elixir/Task.Supervisor.html).
 
-* `GameOfLife.BoardServer` is our module implemented as [GenServer behaviour](http://elixir-lang.org/docs/stable/elixir/GenServer.html). It's responsible for holding the state of the game. By that I mean it keeps the list of alive cells on the board along with generation counter and TRef. TRef is a timer reference as we want to be able to start the game and generate a new list of alive cells for next generation of the game. With each new generation, we will update generation counter. The other interesting thing is that `GameOfLife.BoardServer` is running only on single node. Once another node is connected to cluster where is already running `GameOfLife.BoardServer` then the second `GameOfLife.BoardServer` won't be started as we want to have the single source of truth about the state of our game.
+* `GameOfLife.BoardServer` is our module implemented as [GenServer behaviour](http://elixir-lang.org/docs/stable/elixir/GenServer.html). It's responsible for holding the state of the game. By that I mean it keeps the list of alive cells on the board along with generation counter and TRef. TRef is a timer reference as we want to be able to start the game and generate a new list of alive cells for next generation of the game. With each new generation, we will update generation counter. The other interesting thing is that `GameOfLife.BoardServer` is running only on a single node. Once another node is connected to cluster where is already running `GameOfLife.BoardServer` then the second `GameOfLife.BoardServer` won't be started as we want to have the single source of truth about the state of our game.
 
-* `GameOfLife.GamePrinter` is a simple module using [Agent](http://elixir-lang.org/docs/stable/elixir/Agent.html) in order to keep TRef (time reference) so we can print board to STDOUT with specified interval. We will use [Erlang timer module](http://erlang.org/doc/man/timer.html#apply_interval-4) to print board on the screen every second.
+* `GameOfLife.GamePrinter` is a simple module using [Agent](http://elixir-lang.org/docs/stable/elixir/Agent.html) in order to keep TRef (time reference) so we can print board to STDOUT with the specified interval. We will use [Erlang timer module](http://erlang.org/doc/man/timer.html#apply_interval-4) to print board on the screen every second.
 
 You may wonder what's the difference between GenServer and Agent.
 
