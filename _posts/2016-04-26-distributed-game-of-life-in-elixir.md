@@ -941,8 +941,7 @@ When you run game the pattern behaves as you see. Gun is shooting.
 
 <a href="https://en.wikipedia.org/wiki/Gun_(cellular_automaton)"><img src="/images/blog/posts/distributed-game-of-life-in-elixir/gospers_glider_gun.gif" /></a>
 
-Let's write this pattern down.
-
+Let's write this pattern down. Imagine you want to put the pattern in a rectangle. Left bottom corner of the rectangle is at `{0, 0}` position.
 
 {% highlight elixir %}
 # lib/game_of_life/patterns/guns.ex
