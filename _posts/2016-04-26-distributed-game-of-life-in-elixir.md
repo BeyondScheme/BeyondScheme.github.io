@@ -928,7 +928,72 @@ Alive cells: 4
 
 # Add figure patterns and place them on the board
 
-TODO
+To play our game of life would be great to have easly way to add figures on the board. There are many common known patterns in game of life like still lifes, oscillators, spaceships. You can [learn more about them here](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life#Examples_of_patterns).
+
+One of interesting kind of patterns is gun. Gosper Glider Gun is very popular pattern. Here it is how it looks:
+
+<a href="https://en.wikipedia.org/wiki/Gun_(cellular_automaton)"><img src="/images/blog/posts/distributed-game-of-life-in-elixir/gospers_glider_gun.svg" /></a>
+
+When you run game the pattern behaves as you see. Gun is shooting.
+
+<a href="https://en.wikipedia.org/wiki/Gun_(cellular_automaton)"><img src="/images/blog/posts/distributed-game-of-life-in-elixir/gospers_glider_gun.gif" /></a>
+
+Let's write this pattern down.
+
+
+{% highlight elixir %}
+# lib/game_of_life/patterns/guns.ex
+defmodule GameOfLife.Patterns.Guns do
+  @moduledoc """
+  https://en.wikipedia.org/wiki/Gun_(cellular_automaton)
+  """
+
+  @doc """
+  https://en.wikipedia.org/wiki/File:Game_of_life_glider_gun.svg
+  """
+  def gosper_glider do
+    [
+      {24, 8},
+      {22, 7}, {24, 7},
+      {12, 6}, {13, 6}, {20, 6}, {21, 6}, {34, 6}, {35, 6},
+      {11, 5}, {15, 5}, {20, 5}, {21, 5}, {34, 5}, {35, 5},
+      {0, 4}, {1, 4}, {10, 4}, {16, 4}, {20, 4}, {21, 4},
+      {0, 3}, {1, 3}, {10, 3}, {14, 3}, {16, 3}, {17, 3}, {22, 3}, {24, 3},
+      {10, 2}, {16, 2}, {24, 2},
+      {11, 1}, {15, 1},
+      {12, 0}, {13, 0},
+    ]
+  end
+end
+{% endhighlight %}
+
+It would be also useful if we could place the pattern on the board in the position specified by us. Let's write pattern converter.
+
+{% highlight elixir %}
+# lib/game_of_life/pattern_converter.ex
+defmodule GameOfLife.PatternConverter do
+  @doc """
+  ## Example
+      iex> GameOfLife.PatternConverter.transit([{0, 0}, {1, 3}], -1, 2)
+      [{-1, 2}, {0, 5}]
+  """
+  def transit([{x, y} | cells], x_padding, y_padding) do
+    [{x + x_padding, y + y_padding} | transit(cells, x_padding, y_padding)]
+  end
+
+  def transit([], _x_padding, _y_padding), do: []
+end
+{% endhighlight %}
+
+This is the way how you can add the gosper glider pattern to the board with specified position.
+
+{% highlight elixir %}
+GameOfLife.Patterns.Guns.gosper_glider
+|> GameOfLife.PatternConverter.transit(-2, -3)
+|> GameOfLife.BoardServer.add_cells
+{% endhighlight %}
+
+You can find [more patterns in modules here](https://github.com/BeyondScheme/elixir-game_of_life/tree/master/lib/game_of_life/patterns).
 
 # Run game across multiple nodes
 
