@@ -26,7 +26,7 @@ Let's start with watching quick demo how the game works. As you see we started n
 
 <script type="text/javascript" src="https://asciinema.org/a/44233.js" id="asciicast-44233" async data-preload="true"></script>
 
-# Introduction to Game of Life rules
+# Game of Life rules
 
 If you haven't heard about [game of life problem](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) then here is basic concept. If you already know it, just jump to next header.
 
