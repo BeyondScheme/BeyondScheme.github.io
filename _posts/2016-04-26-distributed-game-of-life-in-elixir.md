@@ -22,7 +22,7 @@ This is a very simple project and if you find yourself more experience please sh
 
 Let's start with watching quick demo how the game works. As you see we started node1 where the game is running and board is printed on the screen. We started also the second node and connected it to the first one. From the second node, we added new cells to the board. Both nodes are responsible for processing the game but only the first node is a master with info about the current state of the game.
 
-<script type="text/javascript" src="https://asciinema.org/a/44233.js" id="asciicast-44233" async></script>
+<script type="text/javascript" src="https://asciinema.org/a/44233.js" id="asciicast-44233" async data-preload="true"></script>
 
 # Just intro to Game of Life rules
 
