@@ -580,7 +580,7 @@ def handle_call({:add_cells, cells}, _from, {alive_cells, tref, generation_count
 end
 {% endhighlight %}
 
-We will add some useful function `GameOfLife.Board` module which helps us do operations on the list of alive cells.
+We will add some useful functions to `GameOfLife.Board` module which helps us to do operations on the list of alive cells.
 
 Another thing you noticed is how we use `Task.Supervisor` in:
 
