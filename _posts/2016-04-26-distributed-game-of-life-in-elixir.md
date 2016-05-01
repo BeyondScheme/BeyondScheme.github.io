@@ -7,6 +7,8 @@ categories: elixir
 tags: elixir distributed game
 ---
 
+<img src="/images/blog/posts/distributed-game-of-life-in-elixir/game_of_life_logo.png" style="float:right;" />
+
 I wrote my first game in Elixir. It's a common thing - Game of Life - but it's a bit different when you solve it in a functional language, especially when you can see how actor model works.
 
 __What I'm going to show you is:__
