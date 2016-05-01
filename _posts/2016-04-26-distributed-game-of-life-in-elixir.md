@@ -1057,3 +1057,7 @@ true
 You could already see how the game works in the demo at the beginning of the article. You can try it on your own machine, just clone the [repository](https://github.com/BeyondScheme/elixir-game_of_life).
 
 # Summary
+
+Finnally we managed to get to the end. It was a pretty long road but we have a working game, distributed across nodes. We learned how to write GenServer, how to use Agents and how we can split processes across nodes with TaskSupervisor. You also saw examples of tests in Elixir and how to use DocTest. Now you know how to connect nodes into the cluster.
+
+Hope you found something interesting in the article. Please share your thoughts in the comments.
