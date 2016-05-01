@@ -22,9 +22,11 @@ This project and the full [source code can be found here](https://github.com/Bey
 
 # Demo
 
-Let's start with watching quick demo how the game works. As you see we started node1 where the game is running and board is printed on the screen. We started also the second node and connected it to the first one. From the second node, we added new cells to the board. Both nodes are responsible for processing the game but only the first node is a master with info about the current state of the game.
+Let's start with watching quick demo how the game works.
 
 <script type="text/javascript" src="https://asciinema.org/a/44233.js" id="asciicast-44233" async data-preload="true"></script>
+
+As you see we started node1 where the game is running and board is printed on the screen. We started also the second node and connected it to the first one. From the second node, we added new cells to the board. Both nodes are responsible for processing the game but only the first node is a master with info about the current state of the game. We can connect more nodes to the cluster so game processing can happen on all of the nodes. You are going to learn in this article how to make it happen.
 
 # Game of Life rules
 
