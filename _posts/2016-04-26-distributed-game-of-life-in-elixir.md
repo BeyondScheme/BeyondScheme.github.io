@@ -757,7 +757,174 @@ You can see the full source code of [GameOfLife.Board module](https://github.com
 
 # Create game printer and console presenter
 
-TODO
+`GameOfLife.GamePrinter` module is running as a worker under supervise of `GameOfLife` supervisor. `GameOfLife.GamePrinter` is using `Agent` to store `TRef` for timer reference as we want to print the board to the STDOUT with the specified interval. You already saw the example with using `Agent` so this shouldn't be new for you. Basically, we wrote public interface to start and stop printing the board to the screen. For tests we used [DocTest](http://elixir-lang.org/docs/stable/ex_unit/ExUnit.DocTest.html).
+
+{% highlight elixir %}
+# lib/game_of_life/game_printer.ex
+defmodule GameOfLife.GamePrinter do
+  @moduledoc """
+  ## Example
+      iex> GameOfLife.GamePrinter.start_printing_board
+      :printing_started
+      iex> GameOfLife.GamePrinter.start_printing_board
+      :already_printing
+      iex> GameOfLife.GamePrinter.stop_printing_board
+      :printing_stopped
+      iex> GameOfLife.GamePrinter.stop_printing_board
+      :already_stopped
+  """
+
+  @print_speed 1000
+
+  def start_link do
+    Agent.start_link(fn -> nil end, name: __MODULE__)
+  end
+
+  def start_printing_board do
+    Agent.get_and_update(__MODULE__, __MODULE__, :do_start_printing_board, [])
+  end
+
+  def do_start_printing_board(nil = _tref) do
+    {:ok, tref} = :timer.apply_interval(@print_speed, __MODULE__, :print_board, [])
+    {:printing_started, tref}
+  end
+
+  def do_start_printing_board(tref), do: {:already_printing, tref}
+
+  def print_board do
+    {alive_cells, generation_counter} = GameOfLife.BoardServer.state
+    alive_counter = alive_cells |> Enum.count
+    GameOfLife.Presenters.Console.print(alive_cells, generation_counter, alive_counter)
+  end
+
+  def stop_printing_board do
+    Agent.get_and_update(__MODULE__, __MODULE__, :do_stop_printing_board, [])
+  end
+
+  def do_stop_printing_board(nil = _tref), do: {:already_stopped, nil}
+
+  def do_stop_printing_board(tref) do
+    {:ok, :cancel} = :timer.cancel(tref)
+    {:printing_stopped, nil}
+  end
+end
+{% endhighlight %}
+
+`GameOfLife.Presenters.Console` is responsible for printing board nicely with  X & Y axises, the number of alive cells and the generation counter.
+Let's start with tests. We are going to capture STDOUT and compare if data printed to the screen are looking as we expect.
+
+{% highlight elixir %}
+# test/game_of_life/presenters/console_test.exs
+defmodule GameOfLife.Presenters.ConsoleTest do
+  use ExUnit.Case
+
+  # allows to capture stuff sent to stdout
+  import ExUnit.CaptureIO
+
+  test "print cells on the console output" do
+    cell_outside_of_board = {-1, -1}
+    cells = [{0, 0}, {1, 0}, {2, 0}, {1, 1}, {0, 2}, cell_outside_of_board]
+
+    result = capture_io fn ->
+      GameOfLife.Presenters.Console.print(cells, 123, 6, 0, 2, 2, 2)
+    end
+
+    assert result == (
+    "    2| O,,\n" <>
+    "    1| ,O,\n" <>
+    "    0| OOO\n" <>
+    "     | _ _ \n" <>
+    "    /  0    \n" <>
+    "Generation: 123\n" <>
+    "Alive cells: 6\n"
+    )
+  end
+end
+{% endhighlight %}
+
+Here is implement our print function.
+
+{% highlight elixir %}
+# lib/game_of_life/presenters/console.ex
+defmodule GameOfLife.Presenters.Console do
+  @doc """
+  Print cells to the console output.
+  Board is visible only for specified size for x and y.
+  Start x and y are in top left corner of the board.
+
+  `x_padding` Must be a prime number. Every x divided by the prime number
+  will be visible on x axis.
+  `y_padding` Any number. Padding for numbers on y axis.
+  """
+  def print(cells, generation_counter, alive_counter, start_x \\ -10, start_y \\ 15, x_size \\ 60, y_size \\ 20, x_padding \\ 5, y_padding \\ 5) do
+    end_x = start_x + x_size
+    end_y = start_y - y_size
+    x_range = start_x..end_x
+    y_range = start_y..end_y
+
+    for y <- y_range, x <- x_range do
+      # draw y axis
+      if x == start_x do
+        (y
+        |> Integer.to_string
+        |> String.rjust(y_padding)) <> "| "
+        |> IO.write
+      end
+
+      IO.write(if Enum.member?(cells, {x, y}), do: "O", else: ",")
+      if x == end_x, do: IO.puts ""
+    end
+
+    # draw x axis
+    IO.write String.rjust("| ", y_padding + 2)
+    x_length = (round((end_x-start_x)/2))
+    for x <- 0..x_length, do: IO.write "_ "
+    IO.puts ""
+    IO.write String.rjust("/  ", y_padding + 2)
+    for x <- x_range do
+      if rem(x, x_padding) == 0 do
+        x
+        |> Integer.to_string
+        |> String.ljust(x_padding)
+        |> IO.write
+      end
+    end
+    IO.puts ""
+    IO.puts "Generation: #{generation_counter}"
+    IO.puts "Alive cells: #{alive_counter}"
+  end
+end
+{% endhighlight %}
+
+The board with bigger visible part looks like:
+
+{% highlight plain %}
+   15| ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+   14| ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+   13| ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+   12| ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+   11| ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+   10| ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+    9| ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+    8| ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+    7| ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+    6| ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+    5| ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+    4| ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+    3| ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+    2| ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+    1| ,,,,,,,,,,OO,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+    0| ,,,,,,,,,,OO,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+   -1| ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+   -2| ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+   -3| ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+   -4| ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+   -5| ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+     | _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+    /  -10  -5   0    5    10   15   20   25   30   35   40   45   50
+Generation: 18
+Alive cells: 4
+{% endhighlight %}
 
 # Add figure patterns and place them on the board
 
