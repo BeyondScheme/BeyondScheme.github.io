@@ -13,12 +13,12 @@ I wrote my first game in Elixir. It's a popular thing - Conway's Game of Life - 
 
 __What I'm going to show you is:__
 
-* How to write Elixir simple rules for game of life with tests
-* Parallel jobs across actors so we utilize all CPU cores
+* How to write rules for game of life with tests in Elixir
+* Parallel tasks across lightweight processes (actors) so we utilize all CPU cores
 * How to distribute work across nodes so the game can be executed by many servers in the cluster
-* How to use GenServer, TaskSupervisor and Agents in Elixir
+* How to use GenServer behaviour, TaskSupervisor and Agents in Elixir
 
-This is a very simple project and the full [source code can be found here](https://github.com/BeyondScheme/elixir-game_of_life).
+This project and the full [source code can be found here](https://github.com/BeyondScheme/elixir-game_of_life).
 
 # Demo
 
