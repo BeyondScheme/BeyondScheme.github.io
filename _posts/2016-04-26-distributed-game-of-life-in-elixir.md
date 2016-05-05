@@ -509,7 +509,7 @@ defmodule GameOfLife.BoardServerTest do
 end
 {% endhighlight %}
 
-Let's add `@moduledoc` do `GameOfLife.BoardServer`.
+Let's add `@moduledoc` to `GameOfLife.BoardServer`.
 
 {% highlight elixir %}
 # lib/game_of_life/board_server.ex
