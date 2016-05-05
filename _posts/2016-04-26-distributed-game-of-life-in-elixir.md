@@ -499,7 +499,7 @@ end
 
 Oh, we forgot about tests. In this case, we can use [DocTest](http://elixir-lang.org/docs/stable/ex_unit/ExUnit.DocTest.html). It allows us to generate tests from the code examples existing in a module/function/macro’s documentation.
 
-Our test file is super short.
+Our test file is super short:
 
 {% highlight elixir %}
 # test/game_of_life/board_server_test.exs
