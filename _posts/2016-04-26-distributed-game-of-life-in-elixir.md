@@ -844,7 +844,7 @@ defmodule GameOfLife.Presenters.ConsoleTest do
 end
 {% endhighlight %}
 
-Here is implemented our print function.
+Here is implemented our print function:
 
 {% highlight elixir %}
 # lib/game_of_life/presenters/console.ex
