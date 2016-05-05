@@ -166,7 +166,7 @@ test "alive cell with 3 neighbours lives" do
 end
 {% endhighlight %}
 
-Now we can implement our `GameOfLife.Cell.keep_alive?/2` function.
+Now, we can implement our `GameOfLife.Cell.keep_alive?/2` function.
 
 {% highlight elixir %}
 # lib/game_of_life/cell.ex
