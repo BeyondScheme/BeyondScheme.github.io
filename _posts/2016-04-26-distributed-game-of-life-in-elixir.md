@@ -334,7 +334,7 @@ A GenServer is a process like any other Elixir process and it can be used to kee
 
 Agent, on the other hand, is much simpler solution than GenServer. Agents are a simple abstraction around state.
 Often in Elixir there is a need to share or store state that must be accessed from different processes or by the same process at different points in time. The Agent module provides a basic server implementation that allows state to be retrieved and updated via a simple API.
-This is what we are going to do in `GameOfLife.GamePrinter` as we need only keep time reference to our timer interval.
+This is what we are going to do in `GameOfLife.GamePrinter` as we only need to keep time reference to our timer interval.
 
 # Create BoardServer
 
