@@ -416,7 +416,7 @@ In our public interface, we have `alive_cells/1` function which returns the list
 
 There is another public function `generation_counter/1` which returns how many generations were already processed by board server.
 
-The `state/1` function returns state that is held by our generic server. The state is represented as the tuple with 3 values like alive cells, TRef (time reference - we want to regenerate board every second) and generation counter. TRef is very internal thing for board server so we won't return this to the outside world. That's why we will return just alive cells and generation counter. You will see it later in implementation for `handle_call(:state, _from, state)`.
+The `state/1` function returns state that is held by our generic server. The state is represented as the tuple with 3 values like alive cells, TRef (time reference - we want to regenerate board every second) and generation counter. TRef is very internal thing for board server so we won't return this to the outside world. That's why we will return just alive cells and generation counter. You will see it later in the implementation for `handle_call(:state, _from, state)`.
 
 You can use `set_alive_cells/1` function in the case when you want to override current list of alive cells with a new list.
 
