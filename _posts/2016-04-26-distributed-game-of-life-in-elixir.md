@@ -111,7 +111,7 @@ defmodule GameOfLife.Cell do
 end
 {% endhighlight %}
 
-Let's write some tests to cover first of the requirement of the Game of Life.
+Let's write some tests to cover first of the requirement of the Game of Life:
 
 > Any live cell with fewer than two live neighbours dies, as if caused by under-population.
 
