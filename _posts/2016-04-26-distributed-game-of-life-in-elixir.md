@@ -11,7 +11,7 @@ I wrote my first game in Elixir. It is a popular thing - Conway's Game of Life -
 
 <img src="/images/blog/posts/distributed-game-of-life-in-elixir/game_of_life_logo.png" style="float:right;margin-left:20px;" />
 
-__What I'm going to show you is:__
+__In this blog post I am going to show:__
 
 * How to write rules for game of life with tests in Elixir
 * Parallel tasks across lightweight processes (actors) so we utilize all CPU cores
