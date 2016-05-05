@@ -203,7 +203,7 @@ end
 
 As you can see, we implemented private function `count_neighbours/4` responsible for counting neighbours. It will be helpful to meet the next rule.
 
-There is one more requirement we forogot which is:
+There is one more requirement we forogot about:
 
 > Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
 
