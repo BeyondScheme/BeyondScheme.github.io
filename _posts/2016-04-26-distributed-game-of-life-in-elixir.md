@@ -86,7 +86,7 @@ All alive cells on the board will be in the list `alive_cells`.
 alive_cells = [{0, 0}, {1, 0}, {2, 0}, {1, 1}, {-1,-2}]
 {% endhighlight %}
 
-Here is example how this board with alive cells looks like:
+Here is an example how this board with alive cells looks like:
 
 <img src="/images/blog/posts/distributed-game-of-life-in-elixir/board_cells.jpg" />
 
