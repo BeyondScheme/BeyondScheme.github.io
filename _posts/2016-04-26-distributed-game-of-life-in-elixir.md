@@ -7,7 +7,7 @@ categories: elixir
 tags: elixir distributed game
 ---
 
-I wrote my first game in Elixir. It's a popular thing - Conway's Game of Life - but it gets quite interesting when you solve it in a functional language, especially when you can see how [actor model](https://en.wikipedia.org/wiki/Actor_model) works and how actors are distributed across servers in network.
+I wrote my first game in Elixir. It is a popular thing - Conway's Game of Life - but it gets quite interesting when you solve it in a functional language, especially when you can see how [actor model](https://en.wikipedia.org/wiki/Actor_model) works and how actors are distributed across servers in network.
 
 <img src="/images/blog/posts/distributed-game-of-life-in-elixir/game_of_life_logo.png" style="float:right;margin-left:20px;" />
 
@@ -324,7 +324,7 @@ Let me describe you what each component on the image is responsible for.
 
 * `Task.Supervisor` is Elixir module defining a new supervisor which can be used to dynamically supervise tasks. We are going to use it to spin off tasks like determining if the particular cell should live or die. Those tasks can be run across nodes connected into the cluster. In above code, we gave name `GameOfLife.TaskSupervisor` for our supervisor. We will use this name to tell `Task.Supervisor.async` function which Task Supervisor should handle our task. You can read more about [Task.Supervisor here](http://elixir-lang.org/docs/stable/elixir/Task.Supervisor.html).
 
-* `GameOfLife.BoardServer` is our module implemented as [GenServer behaviour](http://elixir-lang.org/docs/stable/elixir/GenServer.html). It's responsible for holding the state of the game. By that I mean it keeps the list of alive cells on the board along with generation counter and TRef. TRef is a timer reference returned by [Erlang timer module](http://erlang.org/doc/man/timer.html) and [apply_interval](http://erlang.org/doc/man/timer.html#apply_interval-4) function. We want to start the game and generate a new list of alive cells for next generation with specified time interval. With each new generation, we will update generation counter. The other interesting thing is that `GameOfLife.BoardServer` is running only on a single node. Once another node is connected to the cluster where is already running `GameOfLife.BoardServer` then `GameOfLife.BoardServer` won't be started just like that on the newly connected node. Instead on the new node `GameOfLife.BoardServer` will keep the only reference to the PID of the process existing on the first node. We want to have the single source of truth about the state of our game in one master `GameOfLife.BoardServer` process existing on the first node started in the cluster.
+* `GameOfLife.BoardServer` is our module implemented as [GenServer behaviour](http://elixir-lang.org/docs/stable/elixir/GenServer.html). It is responsible for holding the state of the game. By that I mean it keeps the list of alive cells on the board along with generation counter and TRef. TRef is a timer reference returned by [Erlang timer module](http://erlang.org/doc/man/timer.html) and [apply_interval](http://erlang.org/doc/man/timer.html#apply_interval-4) function. We want to start the game and generate a new list of alive cells for next generation with specified time interval. With each new generation, we will update generation counter. The other interesting thing is that `GameOfLife.BoardServer` is running only on a single node. Once another node is connected to the cluster where is already running `GameOfLife.BoardServer` then `GameOfLife.BoardServer` won't be started just like that on the newly connected node. Instead on the new node `GameOfLife.BoardServer` will keep the only reference to the PID of the process existing on the first node. We want to have the single source of truth about the state of our game in one master `GameOfLife.BoardServer` process existing on the first node started in the cluster.
 
 * `GameOfLife.GamePrinter` is a simple module using [Agent](http://elixir-lang.org/docs/stable/elixir/Agent.html) in order to keep TRef (time reference) so we can print board to STDOUT with the specified interval. We will use [Erlang timer module](http://erlang.org/doc/man/timer.html#apply_interval-4) to print board on the screen every second.
 
@@ -412,7 +412,7 @@ In `start_link/1` function we start new `GenServer`. When our generic server was
 
 As you see we store global name for our server in attribute `@name`. We use another attribute `@game_speed` for default game speed which is 1000 miliseconds.
 
-In our public interface, we have `alive_cells/1` function which returns the list of alive cells. Basically, it's the current state of the game (alive cells on the board). This function calls `GenServer` with registered `@name` and request `:alive_cells`. We need to implement `handle_call/3` function for this type of request (`:alive_cells`).
+In our public interface, we have `alive_cells/1` function which returns the list of alive cells. Basically, it is the current state of the game (alive cells on the board). This function calls `GenServer` with registered `@name` and request `:alive_cells`. We need to implement `handle_call/3` function for this type of request (`:alive_cells`).
 
 There is another public function `generation_counter/1` which returns how many generations was already processed by board server.
 
@@ -999,7 +999,7 @@ You can find [more patterns in modules here](https://github.com/BeyondScheme/eli
 
 # Run game across multiple nodes
 
-Now it's time to run our game. The full [source code can be found here](https://github.com/BeyondScheme/elixir-game_of_life).
+Now it is time to run our game. The full [source code can be found here](https://github.com/BeyondScheme/elixir-game_of_life).
 
 Let's run first node where the `GameOfLife.BoardServer` will be running.
 
