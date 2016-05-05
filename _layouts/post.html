@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+
 <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
@@ -17,47 +18,14 @@ layout: default
     </p>
   </header>
 
+  {% include share_post.html %}
+
   <div class="post-content" itemprop="articleBody">
     {{ content }}
   </div>
 
-  <div class="share-post-container">
-    <div class="share-post-left">
-      <div class="fb-share-button" data-href="{{ page.url | prepend: site.url }}" data-layout="button_count" data-mobile-iframe="true"></div>
+  {% include share_post.html %}
 
-      <a href="https://twitter.com/share" class="twitter-share-button" data-via="{{ site.twitter_username }}" data-hashtags="{{ page.tags | join: ', ' }}">Tweet</a>
-      <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-    </div>
-
-    <div class="share-post-right">
-      <a href="https://twitter.com/{{ site.twitter_username }}" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false">Follow @{{ site.twitter_username }}</a>
-      <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-    </div>
-  </div>
-
-  <div>
-    <div id="disqus_thread"></div>
-    <script>
-    /**
-    * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-    * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
-    */
-    /*
-    var disqus_config = function () {
-    this.page.url = "{{ page.url | prepend: site.url }}"; // Replace PAGE_URL with your page's canonical URL variable
-    this.page.identifier = "{{ page.url | prepend: site.url }}"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
-    };
-    */
-    (function() { // DON'T EDIT BELOW THIS LINE
-    var d = document, s = d.createElement('script');
-
-    s.src = '//beyondscheme.disqus.com/embed.js';
-
-    s.setAttribute('data-timestamp', +new Date());
-    (d.head || d.body).appendChild(s);
-    })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
-  </div>
+  {% include disqus_comments.html %}
 
 </article>
