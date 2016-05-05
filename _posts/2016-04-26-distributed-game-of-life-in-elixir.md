@@ -201,7 +201,7 @@ defmodule GameOfLife.Cell do
 end
 {% endhighlight %}
 
-As you can see we implemented private function `count_neighbours/4` responsible for counting neighbours. It will be helpful later.
+As you can see, we implemented private function `count_neighbours/4` responsible for counting neighbours. It will be helpful later.
 
 There is one more requirement we forogot which is:
 
