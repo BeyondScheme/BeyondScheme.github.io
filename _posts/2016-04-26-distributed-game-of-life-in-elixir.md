@@ -931,7 +931,7 @@ Alive cells: 4
 
 # Add figure patterns and place them on the board
 
-To play our game of life would be great to have an easy way to add figures on the board. There are many common known patterns in game of life like still lifes, oscillators, spaceships. You can [learn more about them here](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life#Examples_of_patterns).
+To play our game of life would be great to have an easy way to add figures on the board. There are many common known patterns like still lifes, oscillators, spaceships. You can [learn more about them here](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life#Examples_of_patterns).
 
 One of interesting kind of patterns is gun. Gosper Glider Gun is very popular pattern. Here it is how it looks:
 
