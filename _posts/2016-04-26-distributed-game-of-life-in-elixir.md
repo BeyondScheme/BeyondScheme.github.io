@@ -414,7 +414,7 @@ As you see we store global name for our server in attribute `@name`. We use anot
 
 In our public interface, we have `alive_cells/1` function which returns the list of alive cells. Basically, it is the current state of the game (alive cells on the board). This function calls `GenServer` with registered `@name` and request `:alive_cells`. We need to implement `handle_call/3` function for this type of request (`:alive_cells`).
 
-There is another public function `generation_counter/1` which returns how many generations was already processed by board server.
+There is another public function `generation_counter/1` which returns how many generations were already processed by board server.
 
 The `state/1` function returns state that is held by our generic server. The state is represented as the tuple with 3 values like alive cells, TRef (time reference - we want to regenerate board every second) and generation counter. TRef is very internal thing for board server so we won't return this to outside world. That's why we will return just alive cells and generation counter. You will see it later in implementation for `handle_call(:state, _from, state)`.
 
