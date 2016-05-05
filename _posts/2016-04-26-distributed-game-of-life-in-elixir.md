@@ -43,7 +43,7 @@ The initial pattern constitutes the seed of the system. The first generation is 
 
 # Create new application in Elixir
 
-First thing first so we are going to create a new Elixir OTP application with supervision tree. We will use supervisor for our game server, you will learn more about it a bit later.
+First things first, so we are going to create a new Elixir OTP application with supervision tree. We will use supervisor for our game server, you will learn more about it a bit later.
 
 {% highlight plain %}
 $ mix new --sup game_of_life
