@@ -759,7 +759,7 @@ You can see the full source code of [GameOfLife.Board module](https://github.com
 
 # Create game printer and console presenter
 
-`GameOfLife.GamePrinter` module is running as a worker under supervise of `GameOfLife` supervisor. `GameOfLife.GamePrinter` is using `Agent` to store `TRef` for timer reference as we want to print the board to the STDOUT with the specified interval. You have already seen the example with using `Agent` so this shouldn't be new for you. Basically, we wrote public interface to start and stop printing the board to the screen. For tests we used [DocTest](http://elixir-lang.org/docs/stable/ex_unit/ExUnit.DocTest.html).
+`GameOfLife.GamePrinter` module is running as a worker under supervise of `GameOfLife` supervisor. `GameOfLife.GamePrinter` is using `Agent` to store `TRef` for timer reference as we want to print the board to the STDOUT with the specified interval. You have already seen the example of using `Agent` so this shouldn't be new for you. Basically, we wrote public interface to start and stop printing the board to the screen. For tests we used [DocTest](http://elixir-lang.org/docs/stable/ex_unit/ExUnit.DocTest.html).
 
 {% highlight elixir %}
 # lib/game_of_life/game_printer.ex
