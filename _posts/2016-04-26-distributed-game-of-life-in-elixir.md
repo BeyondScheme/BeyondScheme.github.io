@@ -653,7 +653,7 @@ defmodule GameOfLife.BoardTest do
 end
 {% endhighlight %}
 
-We need to ensure we won't allow to add the same cell twice to the board hence the above test. Here is the implementation for `add_cells/2` function:
+We need to ensure we won’t allow adding the same cell twice to the board hence we test there are no duplicates. Here is the implementation for `add_cells/2` function:
 
 {% highlight elixir %}
 # lib/game_of_life/board.ex
