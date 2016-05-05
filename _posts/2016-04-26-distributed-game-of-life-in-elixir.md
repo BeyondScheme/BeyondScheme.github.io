@@ -635,7 +635,7 @@ Our node manager has `random_node/0` function which returns the name of a random
 
 # Create board helper functions
 
-We need some helper functions for operations we can do on board like adding, removing cells. Let's start with tests for module `GameOfLife.Board` and function `add_cells/2`.
+We need some helper functions for operations we can do on the board like adding, removing cells. Let's start with tests for module `GameOfLife.Board` and function `add_cells/2`.
 
 {% highlight elixir %}
 # test/game_of_life/board_test.exs
