@@ -665,7 +665,7 @@ defmodule GameOfLife.Board do
 end
 {% endhighlight %}
 
-Another thing is removing cells from the list of alive cells.
+Another thing is removing cells from the list of alive cells:
 
 {% highlight elixir %}
 # test/game_of_life/board_test.exs
