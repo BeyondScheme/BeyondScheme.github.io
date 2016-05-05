@@ -430,7 +430,7 @@ The `start_game/1` function is responsible for starting a new timer which calls 
 
 The last 2 functions are `stop_game/1` and `change_speed/1` which just restart the game and starts a new one with provided speed.
 
-Now you can take a look how above functions are working exactly because they are calling server callbacks.
+Now you can take a look how above functions are working. They are calling server callbacks.
 
 {% highlight elixir %}
 # lib/game_of_life/board_server.ex
