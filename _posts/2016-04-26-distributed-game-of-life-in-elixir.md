@@ -30,7 +30,7 @@ As you can see, node1 represents running game and board on the screen. The secon
 
 # Game of Life rules
 
-If you already know about [game of life problem](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) just jump to [the next header](#create-new-application-in-elixir). If not, in this chapter you can learn basic concept.
+If you already know about [the game of life problem](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) just jump to [the next header](#create-new-application-in-elixir). If not, in this chapter you can learn a basic concept.
 
 The universe of the Game of Life is an infinite two-dimensional orthogonal grid of square cells, each of which is in one of two possible states, alive or dead. Every cell interacts with its eight neighbours, which are the cells that are horizontally, vertically, or diagonally adjacent. At each step in time, the following transitions occur:
 
