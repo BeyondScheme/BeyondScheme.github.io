@@ -94,7 +94,7 @@ and here are proper x & y coordinates:
 
 <img src="/images/blog/posts/distributed-game-of-life-in-elixir/board_cells_xy.jpg" />
 
-Now when we have idea how we are going to store our alive cells we can jump to write some code.
+Now when we have the idea how we are going to store our alive cells we can jump to write some code.
 
 # Game of Life rules with tests
 
