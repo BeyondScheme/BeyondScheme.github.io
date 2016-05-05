@@ -290,7 +290,7 @@ Basically, these are all rules implemented in the single module `GameOfLife.Cell
 
 <img src="/images/blog/posts/distributed-game-of-life-in-elixir/supervisor.jpg" />
 
-Our main supervisor is `GameOfLife.Supervisor` which I mentioned at the begining of the article. Here you can see how we defined its childrens like `Task.Supervisor`, workers for `BoardServer` and `GamePrinter`.
+Our main supervisor is `GameOfLife.Supervisor` which I mentioned at the begining of the article. Here you can see how we defined its children like `Task.Supervisor`, workers for `BoardServer` and `GamePrinter`.
 
 {% highlight elixir %}
 # lib/game_of_life.ex
