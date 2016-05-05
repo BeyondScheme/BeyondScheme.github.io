@@ -582,7 +582,7 @@ end
 
 We will add some useful functions to `GameOfLife.Board` module which helps us to do operations on the list of alive cells.
 
-Another thing you noticed is how we use `Task.Supervisor` in:
+Another interesting thing is how we use `Task.Supervisor` in:
 
 {% highlight elixir %}
 # lib/game_of_life/board_server.ex
