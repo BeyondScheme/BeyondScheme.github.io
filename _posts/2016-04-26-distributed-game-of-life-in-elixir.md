@@ -410,7 +410,7 @@ As you can see, we use `GenServer` behaviour in our module. The module requires 
 
 In `start_link/1` function we start new `GenServer`. When our generic server starts as a first process in the cluster then it becomes master process. In the case when there is already running process with globally registered name `{:global, __MODULE__}` we log info that our process will be a slave process with a reference to existing PID on another node in the cluster.
 
-As you see we store global name for our server in attribute `@name`. We use another attribute `@game_speed` for default game speed which is 1000 miliseconds.
+We store global name for our server in attribute `@name`. We use another attribute `@game_speed` for default game speed which is 1000 miliseconds.
 
 In our public interface, we have `alive_cells/1` function which returns the list of alive cells. Basically, it is the current state of the game (alive cells on the board). This function calls `GenServer` with registered `@name` and request `:alive_cells`. We need to implement `handle_call/3` function for this type of request (`:alive_cells`).
 
