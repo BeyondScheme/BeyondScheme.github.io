@@ -332,7 +332,7 @@ You may wonder what's the difference between GenServer and Agent.
 
 A GenServer is a process like any other Elixir process and it can be used to keep state, execute code asynchronously and so on. The advantage of using a generic server process (GenServer) is that it will have a standard set of interface functions and include functionality for tracing and error reporting. It also fits into a supervision tree as this is what we did in `GameOfLife` module.
 
-Agent, on the other hand, is much simpler solution than GenServer. Agents are a simple abstraction around state.
+On the other hand, Agent is much simpler solution than GenServer. Agents are a simple abstraction around state.
 Often in Elixir there is a need to share or store state that must be accessed from different processes or by the same process at different points in time. The Agent module provides a basic server implementation that allows state to be retrieved and updated via a simple API.
 This is what we are going to do in `GameOfLife.GamePrinter` as we only need to keep time reference to our timer interval.
 
