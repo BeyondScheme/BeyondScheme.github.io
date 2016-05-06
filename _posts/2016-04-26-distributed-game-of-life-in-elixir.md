@@ -320,7 +320,7 @@ defmodule GameOfLife do
 end
 {% endhighlight %}
 
-Let me describe you what each component on the image is responsible for.
+Let me describe what each component on the image is responsible for.
 
 * `Task.Supervisor` is Elixir module defining a new supervisor which can be used to dynamically supervise tasks. We are going to use it to spin off tasks like determining if the particular cell should live or die. Those tasks can be run across nodes connected into the cluster. In above code, we gave name `GameOfLife.TaskSupervisor` for our supervisor. We will use this name to tell `Task.Supervisor.async` function which Task Supervisor should handle our task. You can read more about [Task.Supervisor here](http://elixir-lang.org/docs/stable/elixir/Task.Supervisor.html).
 
