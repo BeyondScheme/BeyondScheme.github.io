@@ -987,7 +987,7 @@ defmodule GameOfLife.PatternConverter do
 end
 {% endhighlight %}
 
-This is the way how you can add the gosper glider pattern to the board with specified position.
+This is the way you can add the gosper glider pattern to the board with specified position.
 
 {% highlight elixir %}
 GameOfLife.Patterns.Guns.gosper_glider
