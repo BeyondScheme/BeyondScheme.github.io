@@ -3,7 +3,6 @@ layout: post
 title:  "Distributed Game of Life in Elixir"
 date:   2016-05-09 08:00:00 +0200
 author: "Artur Trzop"
-categories: elixir
 tags: elixir distributed game
 ---
 
