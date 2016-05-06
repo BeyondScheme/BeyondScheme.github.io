@@ -406,7 +406,7 @@ defmodule GameOfLife.BoardServer do
 end
 {% endhighlight %}
 
-As you can see we use `GenServer` behaviour in our module. I require also Logger as we would like to print some info to the STDOUT.
+As you can see, we use `GenServer` behaviour in our module. I require also Logger as we would like to print some info to the STDOUT.
 
 In `start_link/1` function we start new `GenServer`. When our generic server was started as a first process in the cluster then it becomes master process. In the case when there is already running process with globally registered name `{:global, __MODULE__}` we log info that our process will be a slave process with a reference to existing PID on another node in the cluster.
 
