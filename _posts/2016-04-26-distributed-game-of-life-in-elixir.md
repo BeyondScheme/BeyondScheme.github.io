@@ -1060,6 +1060,6 @@ You could already see how the game works in the demo at the beginning of the art
 
 # Summary
 
-Finnally we managed to get to the end. It was a pretty long road but we have a working game, distributed across nodes. We learned how to write GenServer, use Agents, split processes across nodes with TaskSupervisor and connect nodes into the cluster. You also saw examples of tests in Elixir and how to use DocTest.
+Finally we managed to get to the end. It was a pretty long road but we have a working game, distributed across nodes. We learned how to write GenServer, use Agents, split processes across nodes with TaskSupervisor and connect nodes into the cluster. You also saw examples of tests in Elixir and how to use DocTest.
 
 Hope you found something interesting in the article. Please share your thoughts in the comments.
