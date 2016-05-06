@@ -408,7 +408,7 @@ end
 
 As you can see, we use `GenServer` behaviour in our module. The module requires also Logger as we would like to print some info to the STDOUT.
 
-In `start_link/1` function we start new `GenServer`. When our generic server was started as a first process in the cluster then it becomes master process. In the case when there is already running process with globally registered name `{:global, __MODULE__}` we log info that our process will be a slave process with a reference to existing PID on another node in the cluster.
+In `start_link/1` function we start new `GenServer`. When our generic server starts as a first process in the cluster then it becomes master process. In the case when there is already running process with globally registered name `{:global, __MODULE__}` we log info that our process will be a slave process with a reference to existing PID on another node in the cluster.
 
 As you see we store global name for our server in attribute `@name`. We use another attribute `@game_speed` for default game speed which is 1000 miliseconds.
 
