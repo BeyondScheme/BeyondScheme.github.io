@@ -244,3 +244,34 @@
     }
   }
 }
+
+.post-tags {
+  margin-right: 5px;
+}
+
+.post-tag {
+  background: $brand-color;
+  color: white;
+  font-weight: $normal-font-weight;
+  padding: 3px 10px;
+  border-radius: 10px;
+  margin-right: 5px;
+}
+
+.share-post-container {
+  overflow: hidden;
+
+  .share-post-left {
+    float: left;
+
+    .fb-share-button {
+      //margin-top: -10px;
+      position: relative;
+      top: -6px;
+    }
+  }
+
+  .share-post-right {
+    float: right;
+  }
+}

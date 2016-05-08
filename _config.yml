@@ -12,9 +12,10 @@ description: > # this means to ignore newlines until "baseurl:"
   We do Ruby on Rails, Elixir apps in Phoenix Framework, Java applications in Play! Framework & Spring MVC.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://beyondscheme.com" # the base hostname & protocol for your site
+permalink: /:year/:title
 twitter_username: BeyondSchemeCom
 github_username: BeyondScheme
-blog_url: http://blog.beyondscheme.com
+blog_url: /blog
 static_maps_key: AIzaSyDHFWEJjlBpNFCGXZFtnzm8JWcektYvPx0
 
 # Build settings

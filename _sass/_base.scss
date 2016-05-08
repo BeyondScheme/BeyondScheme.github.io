@@ -220,6 +220,25 @@ pre {
 }
 
 /*
+ * Tables
+ */
+table {
+  margin-bottom: 1rem;
+  width: 100%;
+  border: 1px solid #e5e5e5;
+  border-collapse: collapse;
+}
+td,
+th {
+  padding: .25rem .5rem;
+  border: 1px solid #e5e5e5;
+}
+tbody tr:nth-child(odd) td,
+tbody tr:nth-child(odd) th {
+  background-color: #f9f9f9;
+}
+
+/*
 * welcome - section
 */
 
@@ -469,4 +488,12 @@ pre {
 
 .section-bottom-border {
   border-bottom: 1px solid $grey-color-light;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.double-bold {
+  font-weight: $normal-font-weight;
 }
