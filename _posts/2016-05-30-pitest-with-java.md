@@ -6,12 +6,12 @@ author: "Tomasz Banaś"
 tags: java tests
 ---
 
-There is no doubt that unit tests are necessary to keep good quality of code. People used to check line coverage to determine if they have good tests. But have you ever wonder how to test your tests and check if they really test something?
+There is no doubt that unit tests are necessary to keep good quality of code. People used to check line coverage to determine if they have good tests, but have you ever wonder how to test your tests and check if they really tests something?
 In this post I'll show show you why line coverage is a bad metric and how to use mutation testing to test unit tests.
 
 
 # Mutation testing
-Mutation is small a change in bytecode. When tests will fail then mutation is killed, otherwise mutation has survived.
+Mutation is a small change in bytecode. When tests will fail then mutation is killed, otherwise mutation has survived.
 There are many types of mutation, for example:
 
 * changing operators:
