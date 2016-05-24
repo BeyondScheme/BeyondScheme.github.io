@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Pitest - mutation testing in Java"
-date:   2016-05-30 08:00:00 +0200
+date:   2016-05-24 15:00:00 +0200
 author: "Tomasz Banaś"
 tags: java tests
 ---
