@@ -1,13 +1,13 @@
 ---
 layout: post
-title:  "Test your tests with pitest"
+title:  "Pitest - mutation testing in Java"
 date:   2016-05-30 08:00:00 +0200
 author: "Tomasz Banaś"
 tags: java tests
 ---
 
-There is no doubt that unit tests are necessary to keep good quality of code. People used to check line coverage to determine if they have good tests, but have you ever wonder how to test your tests and check if they really tests something?
-In this post I'll show show you why line coverage is a bad metric and how to use mutation testing to test unit tests.
+There is no doubt that unit tests are necessary to keep good quality of code. People used to check line coverage to determine if they have good tests, but... Have you ever wondered how to test your tests and check if they really test something?
+In this post I'll show you why line coverage is a bad metric and how to use mutation testing in Java.
 
 
 # Mutation testing
@@ -49,9 +49,9 @@ if (true) {
 
 There are few libraries which can be used to mutation testing. I chose [pitest](http://pitest.org/) library.
 
-# Usage
-I wrote small program to calculate ticket price for passengers, which will be used to demonstrate how to use mutation testing to create good tests.
-Program has two classes. *Passenger* class which represents traveler and *TicketPriceCalculator* which contains logic to calculate ticket price.
+# Example of usage pitest in Java
+I wrote a small program to calculate ticket price for passengers, which will be used to demonstrate how to use mutation testing in order to create good tests.
+Program has two classes, `Passenger` class which represents traveler and `TicketPriceCalculator` which contains logic to calculate ticket price.
 
 {% highlight java %}
 # Passenger.java
@@ -109,7 +109,7 @@ public class TicketPriceCalculator {
 {% endhighlight %}
 
 
-There are three basic scenarios to cover in tests: ticket for adult, for child and for family.
+There are three basic scenarios to cover in tests: ticket for adult, child and family.
 
 {% highlight java %}
 # TicketPriceCalculatorTest.java
@@ -155,9 +155,9 @@ public class TicketPriceCalculatorTest {
 }
 {% endhighlight %}
 
-Ok, let's run pitest to see how good are our tests.
+Ok, let's run pitest to see how good our tests are.
 
-To run pitest we can use maven command:
+To run pitest we use maven command:
 {% highlight plain %}
 mvn org.pitest:pitest-maven:mutationCoverage
 {% endhighlight %}
@@ -166,11 +166,11 @@ It will output an html report to *target/pit-reports/YYYYMMDDHHMI*. In this repo
 
 <img src="/images/blog/posts/pitest-with-java/lineCoverage.jpg" />
 
-When you'll click on class name you'll see a detail report.
+When you click on class name you'll see a detail report.
 
 <img src="/images/blog/posts/pitest-with-java/detailReport.jpg" />
 
-We have one type of mutation which survived, it's conditional boundary change. We already know that > operator is mutated to >=. Mutation survived, because when we'll change > to >= our tests will pass.
+We have one type of mutation which survived, it's conditional boundary change. We already know, that `>` operator is mutated to `>=`. Mutation survived, because when we'll change `>` to `>=` our tests will pass.
 We have to add tests for edge cases.
 
 {% highlight java %}
@@ -204,7 +204,7 @@ public void shouldNotCalculatePriceForFamily() {
 }
 {% endhighlight %}
 
-Ok, we covered our edge cases, however if you'll execute pitest plugin once again you'll see that we still have two mutations which survived.
+Ok, we covered our edge cases, however if you execute pitest plugin once again you'll see that we still have two mutations which survived.
 
 <img src="/images/blog/posts/pitest-with-java/survivedMutations.jpg" />
 
@@ -227,8 +227,8 @@ if (childrenCounter >= 1 && adultCounter > 1) {
 }
 {% endhighlight %}
 
-and all test all still green, because second condition *adultCounter > 1* change the result of this statement to false. The same behaviour we can observe when we'll change *adultCounter > 1* to *adultCounter >= 1*.
-To cover this cases we should replace our **shouldNotCalculatePriceForFamily** with two new tests:
+and all test are still green, because second condition `adultCounter > 1` change the result of this statement to false. The same behaviour we might be observed when we'll change `adultCounter > 1` to `adultCounter >= 1`.
+To cover this cases we should replace our `shouldNotCalculatePriceForFamily` with two new tests:
 {% highlight java %}
 @Test
 public void shouldNotCalculatePriceForFamilyEdgeCaseWithAdults() {
@@ -260,4 +260,4 @@ public void shouldNotCalculatePriceForFamilyEdgeCaseWithChildren() {
 After this we finally reached 100% mutation coverage.
 
 # Summary
-Now you know how to use mutation testing to see if your tests are good. You also know that line coverage doesn't mean that we have covered all cases. Hope you enjoyed and you'll start to use mutation testing. All code which was used is available on [repository](https://github.com/BeyondScheme/pitest-java-example).
+To sum up, after this reading you should learn how to use mutation testing to see if your tests are good. You also know that line coverage doesn't mean that we have covered all cases. Hope you enjoyed and you'll start to use mutation testing. All code which was used is available on the [repository](https://github.com/BeyondScheme/pitest-java-example).
