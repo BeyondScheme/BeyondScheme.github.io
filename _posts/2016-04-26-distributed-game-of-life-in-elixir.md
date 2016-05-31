@@ -308,7 +308,9 @@ defmodule GameOfLife do
       # worker(GameOfLife.Worker, [arg1, arg2, arg3]),
       supervisor(Task.Supervisor, [[name: GameOfLife.TaskSupervisor]]),
       worker(GameOfLife.BoardServer, [init_alive_cells]),
-      worker(GameOfLife.GamePrinter, []),
+
+      # We will uncomment this line later
+      # worker(GameOfLife.GamePrinter, []),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
@@ -335,9 +337,152 @@ On the other hand, Agent is much simpler solution than GenServer. Agents are a s
 Often in Elixir there is a need to share or store state that must be accessed from different processes or by the same process at different points in time. The Agent module provides a basic server implementation that allows state to be retrieved and updated via a simple API.
 This is what we are going to do in `GameOfLife.GamePrinter` as we only need to keep time reference to our timer interval.
 
+# Create node manager for task supervisor
+
+Let's start with something simple just to see if we can distribute work across nodes in the cluster. We assume each new process created by task supervisor will be assigned randomly to one of the connected nodes. Each node should be equally overloaded with the assumption that each task is pretty similar and all nodes are machines with the same configuration and overload.
+
+{% highlight elixir %}
+# lib/game_of_life/node_manager.ex
+defmodule GameOfLife.NodeManager do
+  def all_nodes do
+    [Node.self | Node.list]
+  end
+
+  def random_node do
+    all_nodes |> Enum.random
+  end
+end
+{% endhighlight %}
+
+Our node manager has `random_node/0` function which returns the name of a random node connected to the cluster. Basically, that's it. Simple solution should be enough for now.
+
+# Create board helper functions
+
+We need some helper functions for operations we can do on the board like adding, removing cells. Let's start with tests for module `GameOfLife.Board` and function `add_cells/2`.
+
+{% highlight elixir %}
+# test/game_of_life/board_test.exs
+defmodule GameOfLife.BoardTest do
+  use ExUnit.Case, async: true
+
+  test "add new cells to alive cells without duplicates" do
+    alive_cells = [{1, 1}, {2, 2}]
+    new_cells = [{0, 0}, {1, 1}]
+    actual_alive_cells = GameOfLife.Board.add_cells(alive_cells, new_cells)
+                          |> Enum.sort
+    expected_alive_cells = [{0, 0}, {1, 1}, {2, 2}]
+    assert actual_alive_cells == expected_alive_cells
+  end
+end
+{% endhighlight %}
+
+We need to ensure we won’t allow adding the same cell twice to the board hence we test there are no duplicates. Here is the implementation for `add_cells/2` function:
+
+{% highlight elixir %}
+# lib/game_of_life/board.ex
+defmodule GameOfLife.Board do
+  def add_cells(alive_cells, new_cells) do
+    alive_cells ++ new_cells
+    |> Enum.uniq
+  end
+end
+{% endhighlight %}
+
+Another thing is removing cells from the list of alive cells:
+
+{% highlight elixir %}
+# test/game_of_life/board_test.exs
+test "remove cells which must be killed from alive cells" do
+  alive_cells = [{1, 1}, {4, -2}, {2, 2}, {2, 1}]
+  kill_cells = [{1, 1}, {2, 2}]
+  actual_alive_cells = GameOfLife.Board.remove_cells(alive_cells, kill_cells)
+  expected_alive_cells = [{4, -2}, {2, 1}]
+  assert actual_alive_cells == expected_alive_cells
+end
+{% endhighlight %}
+
+Implementation is super simple:
+
+{% highlight elixir %}
+# lib/game_of_life/board.ex
+def remove_cells(alive_cells, kill_cells) do
+  alive_cells -- kill_cells
+end
+{% endhighlight %}
+
+Let's create something more advanced. We should determine which cells should still live on the next generation after tick. Here is test for `GameOfLife.Board.keep_alive_tick/1` function:
+
+{% highlight elixir %}
+# test/game_of_life/board_test.exs
+test "alive cell with 2 neighbours lives on to the next generation" do
+  alive_cells = [{0, 0}, {1, 0}, {2, 0}]
+  expected_alive_cells = [{1, 0}]
+  assert GameOfLife.Board.keep_alive_tick(alive_cells) == expected_alive_cells
+end
+{% endhighlight %}
+
+The function `keep_alive_tick` does a few things like creating a new task with `Task.Supervisor` for each alive cell. Tasks will be created across available nodes in the cluster. We calculate if alive cells should stay alive or be removed. `keep_alive_or_nilify/2` function returns the cell if should live or `nil` otherwise. We wait with `Task.await/1` till all tasks across nodes finished they work. Tasks are working in parallel but we need to wait for results from each task. We remove from the list the `nil` values so at the end we end up with only alive cells for the next generation.
+
+{% highlight elixir %}
+# lib/game_of_life/board.ex
+@doc "Returns cells that should still live on the next generation"
+def keep_alive_tick(alive_cells) do
+  alive_cells
+  |> Enum.map(&(Task.Supervisor.async(
+                {GameOfLife.TaskSupervisor, GameOfLife.NodeManager.random_node},
+                GameOfLife.Board, :keep_alive_or_nilify, [alive_cells, &1])))
+  |> Enum.map(&Task.await/1)
+  |> remove_nil_cells
+end
+
+def keep_alive_or_nilify(alive_cells, cell) do
+  if GameOfLife.Cell.keep_alive?(alive_cells, cell), do: cell, else: nil
+end
+
+defp remove_nil_cells(cells) do
+  cells
+  |> Enum.filter(fn cell -> cell != nil end)
+end
+{% endhighlight %}
+
+There is one more case we should handle which is situation when dead cells should become alive. `GameOfLife.Board.become_alive_tick/1` function will be responsible for that.
+
+{% highlight elixir %}
+# test/game_of_life/board_test.exs
+test "dead cell with three live neighbours becomes a live cell" do
+  alive_cells = [{0, 0}, {1, 0}, {2, 0}, {1, 1}]
+  born_cells = GameOfLife.Board.become_alive_tick(alive_cells)
+  expected_born_cells = [{1, -1}, {0, 1}, {2, 1}]
+  assert born_cells == expected_born_cells
+end
+{% endhighlight %}
+
+That's how our function looks like:
+
+{% highlight elixir %}
+# lib/game_of_life/board.ex
+@doc "Returns new born cells on the next generation"
+def become_alive_tick(alive_cells) do
+  GameOfLife.Cell.dead_neighbours(alive_cells)
+  |> Enum.map(&(Task.Supervisor.async(
+                {GameOfLife.TaskSupervisor, GameOfLife.NodeManager.random_node},
+                GameOfLife.Board, :become_alive_or_nilify, [alive_cells, &1])))
+  |> Enum.map(&Task.await/1)
+  |> remove_nil_cells
+end
+
+def become_alive_or_nilify(alive_cells, dead_cell) do
+  if GameOfLife.Cell.become_alive?(alive_cells, dead_cell), do: dead_cell, else: nil
+end
+{% endhighlight %}
+
+It works similarly as `GameOfLife.Board.keep_alive_tick/1`. First, we are looking for dead neighbours for alive cells and then for each dead cell we create a new process across nodes in the cluster to determine if the dead cell should become alive in next generation.
+
+You can see the full source code of [GameOfLife.Board module](https://github.com/BeyondScheme/elixir-game_of_life/blob/master/lib/game_of_life/board.ex) and [tests on github](https://github.com/BeyondScheme/elixir-game_of_life/blob/master/test/game_of_life/board_test.exs).
+
 # Create BoardServer
 
-Let's start with creating `GameOfLife.BoardServer` generic server behaviour. We define public interface for the server.
+Let's create `GameOfLife.BoardServer` generic server behaviour. We define public interface for the server.
 
 {% highlight elixir %}
 # lib/game_of_life/board_server.ex
@@ -579,7 +724,7 @@ def handle_call({:add_cells, cells}, _from, {alive_cells, tref, generation_count
 end
 {% endhighlight %}
 
-We will add some useful functions to `GameOfLife.Board` module which helps us to do operations on the list of alive cells.
+As you saw before we added some useful functions to `GameOfLife.Board` module which helps us to do operations on the list of alive cells.
 
 Another interesting thing is how we use `Task.Supervisor` in:
 
@@ -612,149 +757,6 @@ keep_alive_task = Task.Supervisor.async(
 {% endhighlight %}
 
 The tuple `{GameOfLife.TaskSupervisor, GameOfLife.NodeManager.random_node}` tells `Task.Supervisor` that we want to use task supervisor with the name `GameOfLife.TaskSupervisor` and we want to run the process on the node returned by `GameOfLife.NodeManager.random_node` function.
-
-# Create node manager for task supervisor
-
-Let's start with something simple just to see if we can distribute work across nodes in the cluster. We assume each new process created by task supervisor will be assigned randomly to one of the connected nodes. Each node should be equally overloaded with the assumption that each task is pretty similar and all nodes are machines with the same configuration and overload.
-
-{% highlight elixir %}
-# lib/game_of_life/node_manager.ex
-defmodule GameOfLife.NodeManager do
-  def all_nodes do
-    [Node.self | Node.list]
-  end
-
-  def random_node do
-    all_nodes |> Enum.random
-  end
-end
-{% endhighlight %}
-
-Our node manager has `random_node/0` function which returns the name of a random node connected to the cluster. Basically, that's it. Simple solution should be enough for now.
-
-# Create board helper functions
-
-We need some helper functions for operations we can do on the board like adding, removing cells. Let's start with tests for module `GameOfLife.Board` and function `add_cells/2`.
-
-{% highlight elixir %}
-# test/game_of_life/board_test.exs
-defmodule GameOfLife.BoardTest do
-  use ExUnit.Case, async: true
-
-  test "add new cells to alive cells without duplicates" do
-    alive_cells = [{1, 1}, {2, 2}]
-    new_cells = [{0, 0}, {1, 1}]
-    actual_alive_cells = GameOfLife.Board.add_cells(alive_cells, new_cells)
-                          |> Enum.sort
-    expected_alive_cells = [{0, 0}, {1, 1}, {2, 2}]
-    assert actual_alive_cells == expected_alive_cells
-  end
-end
-{% endhighlight %}
-
-We need to ensure we won’t allow adding the same cell twice to the board hence we test there are no duplicates. Here is the implementation for `add_cells/2` function:
-
-{% highlight elixir %}
-# lib/game_of_life/board.ex
-defmodule GameOfLife.Board do
-  def add_cells(alive_cells, new_cells) do
-    alive_cells ++ new_cells
-    |> Enum.uniq
-  end
-end
-{% endhighlight %}
-
-Another thing is removing cells from the list of alive cells:
-
-{% highlight elixir %}
-# test/game_of_life/board_test.exs
-test "remove cells which must be killed from alive cells" do
-  alive_cells = [{1, 1}, {4, -2}, {2, 2}, {2, 1}]
-  kill_cells = [{1, 1}, {2, 2}]
-  actual_alive_cells = GameOfLife.Board.remove_cells(alive_cells, kill_cells)
-  expected_alive_cells = [{4, -2}, {2, 1}]
-  assert actual_alive_cells == expected_alive_cells
-end
-{% endhighlight %}
-
-Implementation is super simple:
-
-{% highlight elixir %}
-# lib/game_of_life/board.ex
-def remove_cells(alive_cells, kill_cells) do
-  alive_cells -- kill_cells
-end
-{% endhighlight %}
-
-Let's create something more advanced. We should determine which cells should still live on the next generation after tick. Here is test for `GameOfLife.Board.keep_alive_tick/1` function:
-
-{% highlight elixir %}
-# test/game_of_life/board_test.exs
-test "alive cell with 2 neighbours lives on to the next generation" do
-  alive_cells = [{0, 0}, {1, 0}, {2, 0}]
-  expected_alive_cells = [{1, 0}]
-  assert GameOfLife.Board.keep_alive_tick(alive_cells) == expected_alive_cells
-end
-{% endhighlight %}
-
-The function `keep_alive_tick` does a few things like creating a new task with `Task.Supervisor` for each alive cell. Tasks will be created across available nodes in the cluster. We calculate if alive cells should stay alive or be removed. `keep_alive_or_nilify/2` function returns the cell if should live or `nil` otherwise. We wait with `Task.await/1` till all tasks across nodes finished they work. Tasks are working in parallel but we need to wait for results from each task. We remove from the list the `nil` values so at the end we end up with only alive cells for the next generation.
-
-{% highlight elixir %}
-# lib/game_of_life/board.ex
-@doc "Returns cells that should still live on the next generation"
-def keep_alive_tick(alive_cells) do
-  alive_cells
-  |> Enum.map(&(Task.Supervisor.async(
-                {GameOfLife.TaskSupervisor, GameOfLife.NodeManager.random_node},
-                GameOfLife.Board, :keep_alive_or_nilify, [alive_cells, &1])))
-  |> Enum.map(&Task.await/1)
-  |> remove_nil_cells
-end
-
-def keep_alive_or_nilify(alive_cells, cell) do
-  if GameOfLife.Cell.keep_alive?(alive_cells, cell), do: cell, else: nil
-end
-
-defp remove_nil_cells(cells) do
-  cells
-  |> Enum.filter(fn cell -> cell != nil end)
-end
-{% endhighlight %}
-
-There is one more case we should handle which is situation when dead cells should become alive. `GameOfLife.Board.become_alive_tick/1` function will be responsible for that.
-
-{% highlight elixir %}
-# test/game_of_life/board_test.exs
-test "dead cell with three live neighbours becomes a live cell" do
-  alive_cells = [{0, 0}, {1, 0}, {2, 0}, {1, 1}]
-  born_cells = GameOfLife.Board.become_alive_tick(alive_cells)
-  expected_born_cells = [{1, -1}, {0, 1}, {2, 1}]
-  assert born_cells == expected_born_cells
-end
-{% endhighlight %}
-
-That's how our function looks like:
-
-{% highlight elixir %}
-# lib/game_of_life/board.ex
-@doc "Returns new born cells on the next generation"
-def become_alive_tick(alive_cells) do
-  GameOfLife.Cell.dead_neighbours(alive_cells)
-  |> Enum.map(&(Task.Supervisor.async(
-                {GameOfLife.TaskSupervisor, GameOfLife.NodeManager.random_node},
-                GameOfLife.Board, :become_alive_or_nilify, [alive_cells, &1])))
-  |> Enum.map(&Task.await/1)
-  |> remove_nil_cells
-end
-
-def become_alive_or_nilify(alive_cells, dead_cell) do
-  if GameOfLife.Cell.become_alive?(alive_cells, dead_cell), do: dead_cell, else: nil
-end
-{% endhighlight %}
-
-It works similarly as `GameOfLife.Board.keep_alive_tick/1`. First, we are looking for dead neighbours for alive cells and then for each dead cell we create a new process across nodes in the cluster to determine if the dead cell should become alive in next generation.
-
-You can see the full source code of [GameOfLife.Board module](https://github.com/BeyondScheme/elixir-game_of_life/blob/master/lib/game_of_life/board.ex) and [tests on github](https://github.com/BeyondScheme/elixir-game_of_life/blob/master/test/game_of_life/board_test.exs).
 
 # Create game printer and console presenter
 
@@ -926,6 +928,38 @@ The board with bigger visible part looks like:
     /  -10  -5   0    5    10   15   20   25   30   35   40   45   50
 Generation: 18
 Alive cells: 4
+{% endhighlight %}
+
+Last step is to uncomment `GameOfLife.GamePrinter` worker in:
+
+{% highlight elixir %}
+# lib/game_of_life.ex
+defmodule GameOfLife do
+  use Application
+
+  # See http://elixir-lang.org/docs/stable/elixir/Application.html
+  # for more information on OTP Applications
+  def start(_type, _args) do
+    import Supervisor.Spec, warn: false
+
+    init_alive_cells = []
+
+    children = [
+      # Define workers and child supervisors to be supervised
+      # worker(GameOfLife.Worker, [arg1, arg2, arg3]),
+      supervisor(Task.Supervisor, [[name: GameOfLife.TaskSupervisor]]),
+      worker(GameOfLife.BoardServer, [init_alive_cells]),
+
+      # This line is uncommented now
+      worker(GameOfLife.GamePrinter, []),
+    ]
+
+    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
+    # for other strategies and supported options
+    opts = [strategy: :one_for_one, name: GameOfLife.Supervisor]
+    Supervisor.start_link(children, opts)
+  end
+end
 {% endhighlight %}
 
 # Add figure patterns and place them on the board
