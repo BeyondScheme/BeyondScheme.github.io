@@ -3,7 +3,7 @@ layout: post
 title:  "6 steps to detect wrong session management in your web application"
 date:   2016-05-13 08:00:00 +0200
 author: "Kamil Kubacki"
-tags: web springmvc session java
+tags: web springmvc session-management java
 ---
 
 
@@ -38,7 +38,7 @@ I was not able to reproduce it.
 # <b>1. Verify your application's configuration.</b>
 It is common for web application to has ability to configure session management.
 The variety of configuration varies based on the web framework you decide to use.
-Since I used
+Since I used Spring MVC
 
 # <b>2. Detect any custom session management mechanisms.</b>
 Lorem ipsum.
