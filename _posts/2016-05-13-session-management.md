@@ -28,16 +28,16 @@ style="float:right;margin-left:20px;" />
 
 
 As mentioned in the beginning of the post, I started receiving feedback from
-users that they were being logged from application during continuous usage,
-e.g. by clicking through menu items. At first, I thought that the cause of
-the logouts was the fact that users exceeded the allowed idle time (which was
+users that they were being logged out from application during continuous usage,
+e.g. by clicking through menu items. At first, I thought that logouts were caused
+by the fact that users exceeded the allowed idle time (which was
 set to 30 minutes). Unfortunately, users confirmed that sometimes logouts happen
 few minutes after their logins. I needed to confirm it by myself. Guess what?
 I was not able to reproduce it.
 
 # <b>1. Verify your application's configuration.</b>
 It is common for web application to has ability to configure session management.
-The variety of configuration varies based on the web framework you decide to use.
+The variety of configuration is based on the web framework you decide to use.
 Since I used Spring MVC
 
 # <b>2. Detect any custom session management mechanisms.</b>
