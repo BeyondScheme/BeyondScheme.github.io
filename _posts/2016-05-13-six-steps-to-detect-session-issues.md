@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "6 steps to detect wrong session management in your web application"
+title:  "6 steps to detect session related issues in your web application"
 date:   2016-05-13 08:00:00 +0200
 author: "Kamil Kubacki"
 tags: web java springmvc
@@ -32,7 +32,7 @@ instances on multiple machines. Each JBoss instance is balanced by
 balanced by load balancer. To give you better view at the infrastructure
 please take a look at the picture below.
 
-<img src="/images/blog/posts/session-management/architecture.png" alt="infrastructure" />
+<img src="/images/blog/posts/six-steps-to-detect-session-issues/architecture.png" alt="infrastructure" />
 
 
 # The six steps
