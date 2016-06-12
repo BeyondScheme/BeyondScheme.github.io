@@ -105,11 +105,66 @@ I highly encourage you not to forget about automation in debugging issues like
 that.
 
 # <b>6. Analyze the results.</b>
-Analyse of the results is the most of important thing.
+The five steps presented above allow us to retrieve significant information regarding
+session management, users' behavior flows on the website, application's and
+infrastructure's configuration.
 
+As for my case, those steps helped in finding the cause of the issue and fixing it.
+In the result, the problem laid in load balancer's behavior that was not targeting
+responses to proper machines and instances from which it received requests.
+As you can imagine, if user was logged into 'Machine -1' and performing action
+(e.g. submitting form) load balancer was choosing the random machines to send
+a response to. This was caused by the wrong configuration between application
+and load balancer. The problem with detection this issue was caused by the fact
+that in the 80% of cases the load balancer worked just fine.
+
+How can you fix issue like that?
+
+In my case, load balancer offered a way to explicitly inform it about request's
+details such as the instance that the request was coming from. First, I had to configure
+each JBoss instance so that it had unique identifier. To do this I setup unique
+"jvmRoute" parameter in JBoss and properly configured Apache's workers to match
+jvmRoute name.
+
+As for "jvmRoute", please find a folder
+```${JBOSS_PATH}/server/default/deploy/jboss-web.deployer/``` and look
+for a file server.xml. Inside this file, look for a tag
+```<Engine> ... </Engine>``` and set attribute "jvmRoute" so that it uniquely
+identifies your instance. Sample definition of "jvmRoute" attribute.
+
+{% highlight plain %}
+<Engine name="jboss.web" defaultHost="localhost" jvmRoute="uniqueJvmRouteName">
+...
+</Engine>
+{% endhighlight %}
+
+Then, you need to configure Apache's workers. Apache's workers configuration is
+located under ```${APACHE_PATH}/conf``` folder inside workers.properties file.
+Define worker to match "jvmRoute" name. Sample definition of worker.
+
+{% highlight plain %}
+worker.uniqueJvmRouteName.reference=worker.node
+worker.uniqueJvmRouteName.port=0000
+{% endhighlight %}
+
+Since this is a Java based application, that configuration allows to add unique
+instance name to JSESSION_ID cookie. This cookie might be analyzed by load balancer
+to know from which machine/instance the request came from.
+
+Summing up all the steps and their results, verification of application's
+configuration allowed me to abandon focusing on wrong behavior of session
+management INSIDE the application. Thanks to the increased logging, I was able
+to easily track users and their flows on each instance of the application. Moreover,
+logging and automatic test allowed me to confirm that users' requests
+were "jumping" from one instance to another. Due to verification of the
+infrastructure I found some possible weaknesses that pushed me to analyze
+carefully Apache's and load balancer's configuration. At last but not least,
+the automatic test that was running repeatedly for a couple of days,
+at first helped to confirm users' report and detect the issue. Secondly, it was
+also responsible for verification of the fix.
 
 # Summary
 This is the end of the blog post. After this reading, you should be able to have
-a better overview how to deal with tricky cases regarding session management in
-your web applications. I hope that it might help you as it helped myself. If you
-have any thoughts or questions, please share them in the comments.
+a better overview how to deal with tricky cases regarding detection of  in
+your web applications. I hope that it might help you, as performing those steps
+helped myself. If you have any thoughts or questions, please share them in the comments.
