@@ -45,8 +45,17 @@ It is a common thing for web application to has ability to configure session man
 The variety of configuration is based on the web framework you decide to use.
 Since I used Spring MVC,
 
-# <b>2. Detect any custom session management mechanisms.</b>
-Lorem ipsum.
+# <b>2. Detect any mechanisms messing with session management.</b>
+Each application has its own secrets. It might happen that developers implemented
+mechanisms that influence directly on users' sessions behavior. Personally, I saw
+applications that explicitly increased session timeout for only one page. On the
+other hand, I witnessed apps that performed auto-logout (without action of a user)
+after some amount of idle time (e.g. 15 minutes). That kind of mechanism was done
+with the help of JavaScript and led to many incomprehensions between developers
+team and clients.
+
+Fortunately, my application did not have that kind of mechanisms, yet still
+I made myself sure about during investigation. Do the same.
 
 # <b>3. Enhance monitoring users' behavior.</b>
  -- Session logging
