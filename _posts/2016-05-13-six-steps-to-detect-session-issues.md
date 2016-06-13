@@ -134,7 +134,31 @@ private void extractUserInformation(HttpServletRequest request, String url) {
 
 
 # <b>4. Analyze your infrastructure.</b>
-Lorem ipsum.
+The analysis of your infrastructure might be extremely helpful. Let me share
+with you the most crucial steps in your infrastructure analysis.
+
+1. Prepare the whole overview of your infrastructure.
+You have to know what is the exact path of request that is send from user's
+browser to your application deployed on application server. In order to do that,
+try to draw a whole overview of your infrastructure.
+
+2. Application Server.
+It does not matter which application server you use, get to know if it has an
+influence on your session management.
+
+3. Load balancer.
+Load balancer is a tricky tool. It is fully responsible for dividing the requests
+into different machines. However, wrongly configured load balancing may lead to
+uncommon problems. After the analysis of your load balancer's configuration ask
+yourself two questions:
+* how is session persistance configured?
+* how do the requests know which box should be chosen?
+
+During investigation of mine issue the overview of infrastructure led me to pay
+more attention to connection between JBoss instances and Apache. However, the most
+significant discovery was the wrong configuration of session persistance on my
+load balancer. Unfortunately, that was not the reason of unexpected logouts but
+it also had an influence on keeping session to each machine alive for users.
 
 # <b>5. Prepare automatic tests.</b>
 Automation is your friend, keep it in mind. I found it impossible to repeat the
