@@ -35,15 +35,35 @@ please take a look at the picture below.
 <img src="/images/blog/posts/six-steps-to-detect-session-issues/architecture.png" alt="infrastructure" />
 
 
-# The six steps
+# The Six Steps
 
 At this point, you are familiar with technical details regarding application
 so it is high time to look into the plan.
 
 # <b>1. Verify your application's configuration.</b>
-It is a common thing for web application to has ability to configure session management.
-The variety of configuration is based on the web framework you decide to use.
-Since I used Spring MVC,
+It is a common thing for web application to has ability to configure session management. The variety of configuration is based on the web framework you decide to use. As for Spring MVC you can influence session management with ```<session-config>...</session-config>``` tag inside your web.xml. One of the first things that I checked during investigation of the issue was session timeout configuration under ```<session-config>...</session-config>```. Session timeout property is responsible for invalidating users' sessions if they exceed the defined idle time on the page. The value of this property is defined in minutes. In my case, a wrongly configured session timeout, e.g. to 2 minutes, could explain the reason of unexpected logouts. Unfortunately, the it was configured properly.  
+Nevertheless, let's take a look at sample configuration of session timeout configuration.
+
+{% highlight plain %}
+<session-config>
+    <session-timeout>30</session-timeout>
+</session-config>
+{% endhighlight %}
+
+As you can see, we set session invalidation for 30 minutes. That means that after 30 minutes of not doing anything on the website, user's session will be invalidated and any action taken will redirect user into login page in order to login again and create new session. Remember that if you set session timeout property to value 1, the session will never be invalidated. This is risky in the meaning of security.
+
+Another configuration worth paying attention to is concurrency control strategy defined inside Spring Security xml file. With this property you can set maximum concurrent sessions for a user.
+A sample configuration presenting the concurrency control strategy is presented below. As you can notice, the max-sessions allowed for user is set to 1. If the max-sessions value is exceeded for  logged in user then the application might invalidate user's session. If that happens the currently logged in user will be logged out after performing any action on the website.  
+
+{% highlight plain %}
+<session-management>
+    <concurrency-control
+       max-sessions="1"
+       expired-url="/sessionExpired" />
+  </session-management>
+{% endhighlight %}
+
+My application did not have that configuration setup but you should always check for its existance during investigation of session related issues.
 
 # <b>2. Detect any mechanisms messing with session management.</b>
 Each application has its own secrets. It might happen that developers implemented
@@ -54,12 +74,63 @@ after some amount of idle time (e.g. 15 minutes). That kind of mechanism was don
 with the help of JavaScript and led to many incomprehensions between developers
 team and clients.
 
-Fortunately, my application did not have that kind of mechanisms, yet still
+Again, my application did not have that kind of mechanisms, yet still
 I made myself sure about during investigation. Do the same.
 
 # <b>3. Enhance monitoring users' behavior.</b>
- -- Session logging
- -- Google Analytics
+//web.xml
+    <listener>
+        <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>com.beyondscheme.session.HttpSessionVerifier</listener-class>
+    </listener>
+
+
+public class HttpSessionVerifier implements HttpSessionListener {
+
+    private final static Logger LOGGER = Logger.getLogger(HttpSessionVerifier.class.getName());
+
+    public void sessionCreated(HttpSessionEvent event) {
+        Date sessionCreationTime = new Date(event.getSession().getCreationTime());
+        Date sessionLastAccessedTime = new Date(event.getSession().getLastAccessedTime());
+        int sessionMaxInactiveInterval = event.getSession().getMaxInactiveInterval();
+        LOGGER.warn("Session: " + event.getSession().getId() + " createTime: " + sessionCreationTime
+            + " lastAccess: " + sessionLastAccessedTime + " with maxInactiveInterval: " + sessionMaxInactiveInterval
+            + " created.");
+    }
+
+    public void sessionDestroyed(HttpSessionEvent event) {
+        Date sessionCreationTime = new Date(event.getSession().getCreationTime());
+        Date sessionLastAccessedTime = new Date(event.getSession().getLastAccessedTime());
+        int sessionMaxInactiveInterval = event.getSession().getMaxInactiveInterval();
+        LOGGER.warn("Session: " + event.getSession().getId() + " createTime: " + sessionCreationTime
+            + " lastAccess: " + sessionLastAccessedTime + " with maxInactiveInterval: " + sessionMaxInactiveInterval
+            + " destroyed.");
+    }
+
+}
+
+
+
+private void extractUserInformation(HttpServletRequest request, String url) {
+
+        String userAddr = request.getRemoteAddr();
+        String sessionID = request.getSession().getId();
+        Date sessionCreationTime = new Date(request.getSession().getCreationTime());
+        Date sessionLastAccessedTime = new Date(request.getSession().getLastAccessedTime());
+        int sessionMaxInactiveInterval = request.getSession().getMaxInactiveInterval();
+
+        LOGGER.warn("TCC home page" +
+            "; url:" + url +
+            "; sessionID:" + sessionID +
+            "; created:" + sessionCreationTime +
+            "; lastAccessed:" + sessionLastAccessedTime +
+            "; inactiveInterval:" + sessionMaxInactiveInterval +
+            "; userIp:" + userAddr +
+            ";");
+    }
 
 
 # <b>4. Analyze your infrastructure.</b>
