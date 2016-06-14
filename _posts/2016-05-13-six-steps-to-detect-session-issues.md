@@ -77,61 +77,121 @@ team and clients.
 Again, my application did not have that kind of mechanisms, yet still
 I made myself sure about during investigation. Do the same.
 
-# <b>3. Enhance monitoring users' behavior.</b>
-//web.xml
-    <listener>
-        <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
-    </listener>
+# <b>3. Enhance monitoring session's details.</b>
+During investigation of session related issues you need to start monitoring sessions detao;s.
+That monitoring should contain of information about:
+* session's create time,
+* session's destroy time,
+* session's last accessed time,
 
-    <listener>
-        <listener-class>com.beyondscheme.session.HttpSessionVerifier</listener-class>
-    </listener>
+Additionaly, you should monitor user's behavior on each page of your website and be able to match user to session ID. In order to do that start monitoring:
+* user's remote address,
+* user's details (if possible username/email),
+* choose pages on which you are going to have user's details information.
 
+You can save this data on multiple ways, e.g. log it into app's logs (remember to prepare seperate logger so that you do not make your app logs a bin) or maybe try to use Google Analaytics to store data to.
 
+In Spring MVC app in order to have ability of logging the creation and destroy time of session you need to define inside your web.xml, a listener which implements HttpSessionLister. HttpSessionListener makes it possible to gather pretty relevant information about session details. We are able to get to know about:
+* session's id,
+* session's creation time
+* session's last accessed time.
+
+Below you can see a definition of custom listener, HttpSessionVerifier, inside web.xml file.
+
+{% highlight plain %}
+<listener>
+    <listener-class>com.beyondscheme.session.HttpSessionVerifier</listener-class>
+</listener>
+{% endhighlight %}
+
+The sample implementation of listener which logs information about session when it gets created and destroyed might be done like this:
+
+{% highlight plain %}
 public class HttpSessionVerifier implements HttpSessionListener {
 
-    private final static Logger LOGGER = Logger.getLogger(HttpSessionVerifier.class.getName());
+private final static Logger LOGGER = Logger.getLogger(HttpSessionVerifier.class.getName());
 
-    public void sessionCreated(HttpSessionEvent event) {
-        Date sessionCreationTime = new Date(event.getSession().getCreationTime());
-        Date sessionLastAccessedTime = new Date(event.getSession().getLastAccessedTime());
-        int sessionMaxInactiveInterval = event.getSession().getMaxInactiveInterval();
-        LOGGER.warn("Session: " + event.getSession().getId() + " createTime: " + sessionCreationTime
-            + " lastAccess: " + sessionLastAccessedTime + " with maxInactiveInterval: " + sessionMaxInactiveInterval
-            + " created.");
-    }
+  public void sessionCreated(HttpSessionEvent event) {
+      Date sessionCreationTime = new Date(event.getSession().getCreationTime());
+      Date sessionLastAccessedTime = new Date(event.getSession().getLastAccessedTime());
+      int sessionMaxInactiveInterval = event.getSession().getMaxInactiveInterval();
+      LOGGER.warn("Session: " + event.getSession().getId() + " createTime: " + sessionCreationTime
+          + " lastAccess: " + sessionLastAccessedTime + " with maxInactiveInterval: " + sessionMaxInactiveInterval
+          + " created.");
+  }
 
-    public void sessionDestroyed(HttpSessionEvent event) {
-        Date sessionCreationTime = new Date(event.getSession().getCreationTime());
-        Date sessionLastAccessedTime = new Date(event.getSession().getLastAccessedTime());
-        int sessionMaxInactiveInterval = event.getSession().getMaxInactiveInterval();
-        LOGGER.warn("Session: " + event.getSession().getId() + " createTime: " + sessionCreationTime
-            + " lastAccess: " + sessionLastAccessedTime + " with maxInactiveInterval: " + sessionMaxInactiveInterval
-            + " destroyed.");
-    }
-
+  public void sessionDestroyed(HttpSessionEvent event) {
+      Date sessionCreationTime = new Date(event.getSession().getCreationTime());
+      Date sessionLastAccessedTime = new Date(event.getSession().getLastAccessedTime());
+      int sessionMaxInactiveInterval = event.getSession().getMaxInactiveInterval();
+      LOGGER.warn("Session: " + event.getSession().getId() + " createTime: " + sessionCreationTime
+          + " lastAccess: " + sessionLastAccessedTime + " with maxInactiveInterval: " + sessionMaxInactiveInterval
+          + " destroyed.");
+  }
 }
+{% endhighlight %}
 
+Since we have information about creation and destroy time of a session, we need to figure out how to match a user to a session id. You can do it easily by logging user's details after successful logging.
 
+{% highlight plain %}
 
 private void extractUserInformation(HttpServletRequest request, String url) {
 
-        String userAddr = request.getRemoteAddr();
-        String sessionID = request.getSession().getId();
-        Date sessionCreationTime = new Date(request.getSession().getCreationTime());
-        Date sessionLastAccessedTime = new Date(request.getSession().getLastAccessedTime());
-        int sessionMaxInactiveInterval = request.getSession().getMaxInactiveInterval();
+    String userAddr = request.getRemoteAddr();
+    String sessionID = request.getSession().getId();
+    Date sessionCreationTime = new Date(request.getSession().getCreationTime());
+    Date sessionLastAccessedTime = new Date(request.getSession().getLastAccessedTime());
+    int sessionMaxInactiveInterval = request.getSession().getMaxInactiveInterval();
 
-        LOGGER.warn("TCC home page" +
-            "; url:" + url +
-            "; sessionID:" + sessionID +
-            "; created:" + sessionCreationTime +
-            "; lastAccessed:" + sessionLastAccessedTime +
-            "; inactiveInterval:" + sessionMaxInactiveInterval +
-            "; userIp:" + userAddr +
-            ";");
+    LOGGER.warn("Home page" +
+        "; url:" + url +
+        "; sessionID:" + sessionID +
+        "; created:" + sessionCreationTime +
+        "; lastAccessed:" + sessionLastAccessedTime +
+        "; inactiveInterval:" + sessionMaxInactiveInterval +
+        "; userIp:" + userAddr +
+        ";");
+}
+
+{% endhighlight %}
+
+After adding this logging functionality I found it easy to monitor more precisely user's sessions flows. Fortunately, I knew exactly when the session was created but I didn't know if the destruction of the session was caused by user manually, by clicking logout button, or it was done by app itself. To fix it, we need to add logging to logout functionality. In Spring Security xml file please a line which defines logout success-handler. This handler is allows developers to influence logged out functionality.
+
+Definition ins Spring's Security xml file.
+
+{% highlight plain %}
+<http ...>
+ ...
+ <logout success-handler-ref="logoutSuccessHandler"/>
+</http>
+{% endhighlight %}
+
+We need to create a class, LogoutSuccessHandler, that needs to extend SimpleUrlLogoutSuccessHandler from Spring Security Web jar. A sample implementation of a class which logs the information about session id during logout is presented below.
+
+{% highlight plain %}
+ public class LogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
+
+ 	private final static Logger LOGGER = Logger.getLogger(LogoutSuccessHandler.class.getName());
+
+    @Override
+    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
+      Authentication authentication)
+        throws IOException, ServletException {
+
+        if (request != null && request.getSession() != null) {
+            LOGGER.warn("Logout handler for session= " + request.getSession().getId());
+        }
+
+        if (authentication != null) {
+            LOGGER.info("User name=" + authentication.getPrincipal());
+        }
+
+        super.onLogoutSuccess(request, response, authentication);
     }
+}
+{% endhighlight %}
 
+Now you are able to distinguish the information about destruction of the session after successful logout by a user or by unplanned logout done by application. As you may see, saving the information about session is extremely helpful for analysis of session live time.
 
 # <b>4. Analyze your infrastructure.</b>
 The analysis of your infrastructure might be extremely helpful. Let me share
