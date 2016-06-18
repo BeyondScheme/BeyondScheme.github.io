@@ -1,9 +1,9 @@
 ---
 layout: post
 title:  "6 steps to investigate unexpected logouts in your Java web application"
-date:   2016-05-13 08:00:00 +0200
+date:   2016-06-20 06:00:00 +0200
 author: "Kamil Kubacki"
-tags: web java springmvc session session-management
+tags: web java springmvc session-management
 ---
 
 
@@ -340,7 +340,7 @@ for a file server.xml. Inside this file, look for a tag
 ```<Engine> ... </Engine>``` and set attribute "jvmRoute" so that it uniquely
 identifies your instance. Sample definition of "jvmRoute" attribute.
 
-{% highlight plain %}
+{% highlight xml %}
 <Engine name="jboss.web" defaultHost="localhost" jvmRoute="uniqueJvmRouteName">
 ...
 </Engine>
