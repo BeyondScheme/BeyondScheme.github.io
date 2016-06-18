@@ -17,7 +17,7 @@ out the root cause of unexpected users' logouts in my Spring MVC web application
 Users' claimed that they were being logged out during continuous usage of
 application (e.g. during clicking through menu). I was trying to reproduce
 those unexpected logouts on my own but it resulted in failure. First idea about
-possible cause of logouts led me to thinking that users were logged out due to
+possible cause of logouts led me to think that users were logged out due to
 exceeded idle timeout available. My assumptions were denied by clients (and by me)
 so I started looking for the help in the Internet. I was not able to find a clear
 way to deal with those kind of problems so I prepared a plan to figure out the solution.
@@ -41,25 +41,24 @@ At this point, you are familiar with technical details regarding application
 so it is high time to look into the plan.
 
 # <b>1. Verify your application's configuration.</b>
-It is a common think for web application to has ability to configure session management.
+It is a common thing for web application to has ability to configure session management.
 The variety of configuration is based on the web framework you decide to use.
 As for Spring MVC you can influence session management with ```<session-config>...</session-config>```
 tag inside web.xml. One of the first things that I checked during investigation
-was session timeout configuration under this tag. Session timeout property is
-responsible for invalidating users' sessions if they exceed the defined idle time
-on the website. The value of this property is defined in minutes. In my case,
-a wrongly configured session timeout, e.g. to 2 minutes, could explain the reason
-of unexpected logouts. Unfortunately, it was configured with sufficient timeout value.  
+was session timeout configuration under this tag. This property is
+responsible for invalidating users' sessions if they exceed idle timeout (defined in minutes) on the website. In my case, a wrongly configured session timeout,
+e.g. to 2 minutes, could explain the reason of unexpected logouts.
+Unfortunately, it was configured with sufficient timeout value.  
 Nevertheless, let's take a look at sample configuration of session timeout configuration.
 
-{% highlight plain %}
+{% highlight xml %}
 <session-config>
     <session-timeout>30</session-timeout>
 </session-config>
 {% endhighlight %}
 
-As you can see, we set session invalidation of session for 30 minutes.
-That means that after 30 minutes of not doing anything on the website,
+As you can see, we set session invalidation for 30 minutes.
+This means that after 30 minutes of not doing anything on the website,
 user's session will be invalidated and any action taken redirects user into
 login page. Remember, that if you set session timeout property to value -1,
 the session will never be invalidated. This is risky in the meaning of security.
@@ -67,13 +66,13 @@ the session will never be invalidated. This is risky in the meaning of security.
 Another configuration worth paying attention to is concurrency control strategy
 defined inside Spring Security XML configuration file. With this property
 you can set maximum concurrent sessions for a user. A sample configuration
-presenting the concurrency control strategy is presented below.
+presenting the concurrency control strategy is listed below.
 As you can notice, the max-sessions allowed for user is set to 1.
 If the max-sessions value is exceeded for logged in user, the application might
 invalidate user's session. If that happens the currently logged in user will be
 logged out after performing any action on the website.  
 
-{% highlight plain %}
+{% highlight xml %}
 <session-management>
     <concurrency-control
        max-sessions="1"
@@ -101,7 +100,7 @@ pay a lot of attention to it.
 During investigation of session related issues you need to start monitoring
 sessions details. It is needed for having better knowledge about their expiration
 time, their flow etc.
-That monitoring should contain of information about:
+That monitoring should contain information about:
 
 * session's create time,
 * session's destroy time,
@@ -119,15 +118,16 @@ a bin) or try to use Google Analytics to store data to.
 
 In Spring MVC app, in order to have ability to log the creation and destroy time
 of a session you need to define inside your web.xml a listener which implements
-HttpSessionLister. HttpSessionListener makes it possible to gather pretty
+`HttpSessionLister`. `HttpSessionListener` makes it possible to gather pretty
 relevant information about session details. We are able to get information about:
+
 * session's id,
 * session's creation time
 * session's last accessed time.
 
-Below you can see a definition of custom listener, HttpSessionVerifier, inside web.xml file.
+Below you can see a definition of custom listener, `HttpSessionVerifier`, inside web.xml file.
 
-{% highlight plain %}
+{% highlight xml %}
 <listener>
     <listener-class>com.beyondscheme.session.HttpSessionVerifier</listener-class>
 </listener>
@@ -136,7 +136,7 @@ Below you can see a definition of custom listener, HttpSessionVerifier, inside w
 The sample implementation of listener which logs information about session
 when it gets created and destroyed might be done like this:
 
-{% highlight plain %}
+{% highlight java %}
 
 public class HttpSessionVerifier implements HttpSessionListener {
 
@@ -169,9 +169,9 @@ private final static Logger LOGGER = Logger.getLogger(HttpSessionVerifier.class.
 
 Since we have information about creation and destroy time of a session, we need
 to figure out how to match a user to a session id. You can do it easily by
-logging user's details from HttpServletRequest class.
+logging user's details from `HttpServletRequest` class.
 
-{% highlight plain %}
+{% highlight java %}
 
 private void extractUserInformation(HttpServletRequest request, String url) {
 
@@ -203,19 +203,19 @@ This handler allows developers to influence logged out functionality.
 
 Definition inside Spring Security XML configuration file.
 
-{% highlight plain %}
+{% highlight xml %}
 <http ...>
  ...
  <logout success-handler-ref="logoutSuccessHandler"/>
 </http>
 {% endhighlight %}
 
-We need to create a class, LogoutSuccessHandler, that needs to extend
-SimpleUrlLogoutSuccessHandler from Spring Security Web library.
+We need to create a class, `LogoutSuccessHandler`, that needs to extend
+`SimpleUrlLogoutSuccessHandler` from Spring Security Web library.
 A sample implementation of a class which logs the information about
 session id during logout is presented below.
 
-{% highlight plain %}
+{% highlight java %}
 
 public class LogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
 
@@ -263,8 +263,8 @@ Load balancer is a tricky tool. It is fully responsible for dividing the request
 into different machines. However, wrongly configured may lead to
 uncommon problems. After the analysis of your load balancer's configuration ask
 yourself two questions:
-* how is session persistence configured?
-* how do the requests know which box should be chosen for request?
+* How is session persistence configured?
+* How do requests know which box should be chosen?
 
 During investigation of mine issue the overview of infrastructure led me to pay
 more attention to connection between JBoss instances and Apache. However, the most
@@ -296,7 +296,7 @@ information you need to debug the cause, i.e.:
 * Tests should be run in the loop for some amount of time - users spend some time
 on your website.
 * Run the test via automation server, e.g. [Jenkins](https://jenkins.io/) - setup
-the job to be ran multiple times a day.
+the job to be run multiple times a day.
 
 The listing below represents the configuration for my test:
 
@@ -331,7 +331,8 @@ you my solution.
 
 I had to configure each JBoss instance so that it had unique identifier.
 To do that, I setup unique "jvmRoute" parameter in JBoss and properly
-configured Apache's workers to match "jvmRoute" name.
+configured Apache's workers to match "jvmRoute" name. The following configuration
+applies to JBoss 4.2.2-GA.
 
 As for "jvmRoute" parameter, please find a directory
 ```${JBOSS_PATH}/server/default/deploy/jboss-web.deployer/``` and look
@@ -354,11 +355,9 @@ worker.uniqueJvmRouteName.reference=worker.node
 worker.uniqueJvmRouteName.port=0000
 {% endhighlight %}
 
-That information about unique "jvmRoute" parameter should be shared with load
+This information about unique "jvmRoute" parameter should be shared with load
 balancer. You need to explicitly configure your load balancer to recognize if
-the requests contain that information. As for Java based application, that configuration
-you might add unique instance name to JSESSION_ID cookie. This cookie might be analyzed by load balancer
-to know from which machine/instance the request came from.
+the requests contain that information. As for Java based application, you might add unique instance name to JSESSION_ID cookie. This cookie might be analyzed by load balancer to know from which machine/instance the request came from.
 
 Summing up all the steps and their results, verification of application's
 configuration allowed me to abandon focusing on wrong behavior of session
