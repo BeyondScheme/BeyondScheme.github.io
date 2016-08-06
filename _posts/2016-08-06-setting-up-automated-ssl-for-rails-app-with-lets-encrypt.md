@@ -25,3 +25,13 @@ A while ago I read on hacker news about [Let's Encrypt](https://letsencrypt.org)
 * open certificates
 
 What differentiates Let's Encrypt from other Certificate Authorities is that Let's Encrypt has ninety-day lifetimes for certificates. One of the reasons of ninety-day lifetimes is that it encourage automation. We can’t continue to expect system administrators to manually handle renewals. More explanation you can [find here](https://letsencrypt.org/2015/11/09/why-90-days.html).
+
+# What you are going to learn
+
+In this article I'm going to show you how to:
+
+* create capistrano tasks to:
+  * register Let's Encrypt client
+  * authorize domain on Let's Encrypt
+  * obtain a certificate from Let's Encrypt
+* create rake task for certificate renewal process and how to run it via cron
