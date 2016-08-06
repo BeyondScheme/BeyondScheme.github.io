@@ -65,7 +65,7 @@ namespace :letsencrypt do
       contact_email = fetch(:letsencrypt_contact_email) || raise('Missing contact email')
       letsencrypt_dir = fetch(:letsencrypt_dir) || raise('Missing letsencrypt directory')
       private_key_path = fetch(:letsencrypt_private_key_path) ||
-                                                   raise('Missing private key path')
+                         raise('Missing private key path')
 
       # We need an ACME server to talk to, see github.com/letsencrypt/boulder
       # WARNING: This endpoint is the production endpoint, which is rate limited
@@ -80,8 +80,8 @@ namespace :letsencrypt do
 
       if test("[ -f #{private_key_path} ]")
         info "Private key file already exists at #{private_key_path}"
-        info "If you want to generate a new private key then please
-                                            remove the current private key"
+        info "If you want to generate a new private key then please" <<
+             "remove the current private key"
         info "and then run task again."
       else
         # We're going to need a private key.
@@ -127,7 +127,7 @@ namespace :letsencrypt do
       letsencrypt_authorize_domains = fetch(:letsencrypt_authorize_domains) ||
                                       raise('Missing letsencrypt authorize domains')
       private_key_path = fetch(:letsencrypt_private_key_path) ||
-                                      raise('Missing private key path')
+                         raise('Missing private key path')
 
       # We need an ACME server to talk to, see github.com/letsencrypt/boulder
       # WARNING: This endpoint is the production endpoint, which is rate limited
@@ -228,7 +228,7 @@ namespace :letsencrypt do
       letsencrypt_dir = fetch(:letsencrypt_dir) || raise('Missing letsencrypt directory')
       certificate_dir = "#{letsencrypt_dir}/certificate"
       private_key_path = fetch(:letsencrypt_private_key_path) ||
-                                    raise('Missing private key path')
+                         raise('Missing private key path')
       endpoint = fetch(:letsencrypt_endpoint) || raise('Missing letsencrypt endpoint')
 
       cert_privkey_path = "#{certificate_dir}/privkey.pem"
