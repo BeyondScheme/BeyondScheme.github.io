@@ -12,21 +12,21 @@ tags:
   - Let's Encrypt
 ---
 
-Recently I was working on adding https to my website [KnapsackPro.com](https://knapsackpro.com) and I'd like to share some tips with you how to configure SSL/TLS in rails application for free with Let's Encrypt.
+Recently I was working on adding HTTPS to my website [KnapsackPro.com](https://knapsackpro.com) and I'd like to share some tips with you how to configure SSL/TLS in Rails application for free with Let's Encrypt.
 
 <img src="/images/blog/posts/setting-up-automated-ssl-for-rails-app-with-lets-encrypt/lets_encrypt.png" style="float:right;width:300px;" />
 
-I needed a secure connection for my API rails application because my gem called [knapsack_pro](https://github.com/KnapsackPro/knapsack_pro-ruby), which is responsible for optimizing test suite split, sends test file names to API where the test suite split is happening. I wanted to keep connection more secure with SSL/TLS.
+I needed a secure connection for my Rails application API because my gem called [knapsack_pro](https://github.com/KnapsackPro/knapsack_pro-ruby), which is responsible for optimizing test suite split, sends test file names to API where the test suite split happens. I wanted to keep the connection more secure with SSL/TLS.
 
-I was looking for options like maybe buying a cheap certificate for a year but I needed a few certificates for domains like main website, api domain, staging website and api staging domain.
+I was looking for options like buying a cheap certificate for a year but I needed a few certificates for my other domains like main website, API domain, staging website and API staging domain.
 
-A while ago I read on hacker news about [Let's Encrypt](https://letsencrypt.org). It's is a new Certificate Authority sponsored by many companies. They are aiming for a few things:
+A while ago, I read an article on hacker news about [Let's Encrypt](https://letsencrypt.org). It's is a new Certificate Authority sponsored by many companies. They are aiming for a few things:
 
 * free certificates for everyone
-* ssl renewal process should be automated (no more buying a certificate every year and manually updating it on the server)
+* SSL renewal process should be automated (no more buying a certificate every year and manually updating it on the server)
 * automatic issuance and renewal protocol as an open standard
 
-What differentiates Let's Encrypt from other Certificate Authorities is that Let's Encrypt has ninety-day lifetimes for certificates. One of the reasons of ninety-day lifetimes is that it encourage automation. We can’t continue to expect system administrators to manually handle renewals. More explanation you can [find here](https://letsencrypt.org/2015/11/09/why-90-days.html).
+What differentiates Let's Encrypt from other Certificate Authorities is that Let's Encrypt has ninety-day lifetimes for certificates. One of the reasons of ninety-day lifetimes is that it encourages automation. We can’t continue to expect system administrators to manually handle renewals. More explanation can be [found here](https://letsencrypt.org/2015/11/09/why-90-days.html).
 
 # What you are going to learn
 
@@ -36,7 +36,7 @@ In this article I'm going to show you how to:
   * register Let's Encrypt client
   * authorize domain on Let's Encrypt
   * obtain a certificate from Let's Encrypt
-* create rake task for certificate renewal process and how to run it via cron
+* create rake task for certificate renewal process and run it via cron
 
 # How to work with Let's Encrypt
 
@@ -54,7 +54,7 @@ Remember to run `bundle install` after that.
 
 We have to create an account on Let's Encrypt in order to authenticate our client. The capistrano task will handle that and create a new private key which will be registered on Let's Encrypt.
 
-When you will try to run the task for the second time it will skip registration process because the private key exists.
+When you try to run the task for the second time it will skip registration process because the private key exists.
 Thanks to that we will be able to use the task during deployment via capistrano. The task will create a private key and register it on Let's Encrypt only when that's necessary.
 
 {% highlight ruby %}
@@ -106,7 +106,7 @@ namespace :letsencrypt do
 end
 {% endhighlight %}
 
-We also need to ensure capistrano gem can see our task. Add below the line at the end of your `Capfile` if the line is missing.
+We also need to ensure that capistrano gem can see our task. Add the line listed below at the end of your `Capfile` if the line is missing.
 
 {% highlight ruby %}
 # Capfile
@@ -276,7 +276,7 @@ namespace :letsencrypt do
 end
 {% endhighlight %}
 
-Please note that I'm using nginx and [my nginx configuration](https://github.com/KnapsackPro/capistrano-cookbook/blob/master/lib/capistrano/cookbook/templates/nginx.conf.erb#L54,L55) is looking for ssl cert and ssl private key in shared directory. In your case, it might be a different directory. You need to ensure your server like nginx or apache has enabled SSL and specified the path where to look for the certificate.
+Please note that I'm using nginx and [my nginx configuration](https://github.com/KnapsackPro/capistrano-cookbook/blob/master/lib/capistrano/cookbook/templates/nginx.conf.erb#L54,L55) is looking for SSL cert and SSL private key in shared directory. In your case, it might be a different directory. You need to ensure your server like nginx or Apache has enabled SSL and specified the path where to look for the certificate.
 
 # Configuration of capistrano so it will work with our tasks
 
@@ -303,7 +303,7 @@ after 'letsencrypt:obtain_certificate', 'nginx:reload'
 {% endhighlight %}
 
 We need to reload nginx server after we obtain the certificate.
-I assume you have the task like `nginx:reload` or something similar for another http server like apache.
+I assume you have the task like `nginx:reload` or something similar for another HTTP server like Apache.
 
 # Create rake task for certificate renewal process
 
