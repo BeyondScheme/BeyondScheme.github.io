@@ -67,7 +67,8 @@ namespace :letsencrypt do
       private_key_path = fetch(:letsencrypt_private_key_path) || raise('Missing private key path')
 
       # We need an ACME server to talk to, see github.com/letsencrypt/boulder
-      # WARNING: This endpoint is the production endpoint, which is rate limited and will produce valid certificates.
+      # WARNING: This endpoint is the production endpoint, which is rate limited
+      # and will produce valid certificates.
       # You should probably use the staging endpoint for all your experimentation:
       # endpoint = 'https://acme-staging.api.letsencrypt.org/'
       endpoint = fetch(:letsencrypt_endpoint) || raise('Missing letsencrypt endpoint')
@@ -78,7 +79,8 @@ namespace :letsencrypt do
 
       if test("[ -f #{private_key_path} ]")
         info "Private key file already exists at #{private_key_path}"
-        info "If you want to generate a new private key then please remove the current private key and then run task again."
+        info "If you want to generate a new private key then please remove the current private key"
+        info "and then run task again."
       else
         # We're going to need a private key.
         require 'openssl'
@@ -92,7 +94,8 @@ namespace :letsencrypt do
         # If the private key is not known to the server, we need to register it for the first time.
         registration = client.register(contact: "mailto:#{contact_email}")
 
-        # You may need to agree to the terms of service (that's up the to the server to require it or not but boulder does by default)
+        # You may need to agree to the terms of service
+        # (that's up the to the server to require it or not but boulder does by default)
         registration.agree_terms
       end
     end
@@ -118,11 +121,13 @@ namespace :letsencrypt do
   task :authorize_domain do
     on roles(:app) do
       letsencrypt_dir = fetch(:letsencrypt_dir) || raise('Missing letsencrypt directory')
-      letsencrypt_authorize_domains = fetch(:letsencrypt_authorize_domains) || raise('Missing letsencrypt authorize domains')
+      letsencrypt_authorize_domains = fetch(:letsencrypt_authorize_domains) ||
+                                      raise('Missing letsencrypt authorize domains')
       private_key_path = fetch(:letsencrypt_private_key_path) || raise('Missing private key path')
 
       # We need an ACME server to talk to, see github.com/letsencrypt/boulder
-      # WARNING: This endpoint is the production endpoint, which is rate limited and will produce valid certificates.
+      # WARNING: This endpoint is the production endpoint, which is rate limited
+      # and will produce valid certificates.
       # You should probably use the staging endpoint for all your experimentation:
       # endpoint = 'https://acme-staging.api.letsencrypt.org/'
       endpoint = fetch(:letsencrypt_endpoint) || raise('Missing letsencrypt endpoint')
@@ -143,7 +148,8 @@ namespace :letsencrypt do
         run_verification = false
 
         unless test("[ -f #{challenge_json_path} ]")
-          # This example is using the http-01 challenge type. Other challenges are dns-01 or tls-sni-01.
+          # This example is using the http-01 challenge type.
+          # Other challenges are dns-01 or tls-sni-01.
           challenge = authorization.http01
 
           # The http-01 method will require you to respond to a HTTP request.
@@ -157,7 +163,8 @@ namespace :letsencrypt do
           # You can generate the body of the expected response.
           info challenge.file_content # => 'string token and JWK thumbprint'
 
-          # You are not required to send a Content-Type. This method will return the right Content-Type should you decide to include one.
+          # You are not required to send a Content-Type.
+          # This method will return the right Content-Type should you decide to include one.
           info challenge.content_type
 
           # save the challenge for use at another time
@@ -169,10 +176,12 @@ namespace :letsencrypt do
 
         challenge_json = capture :cat, challenge_json_path
 
-        # Load a saved challenge. This is only required if you need to reuse a saved challenge as outlined above.
+        # Load a saved challenge.
+        # This is only required if you need to reuse a saved challenge as outlined above.
         challenge = client.challenge_from_hash(JSON.parse(challenge_json))
 
-        # Save the file. We'll create a public directory to serve it from, and inside it we'll create the challenge file.
+        # Save the file. We'll create a public directory to serve it from,
+        # and inside it we'll create the challenge file.
         execute :mkdir, "-p #{release_path}/public/#{File.dirname(challenge.filename)}"
 
         # We'll write the content of the file
@@ -191,7 +200,8 @@ namespace :letsencrypt do
 
           info "Verify status: #{challenge.verify_status}" # => 'valid'
         else
-          info "Skipped verification of challenge. It's already verified. If you want to verify different domain please remove file:"
+          info "Skipped verification of challenge. It's already verified."
+          info "If you want to verify different domain please remove file:"
           info "#{challenge_json_path} and run the task again."
         end
       end
@@ -209,7 +219,8 @@ The last step is to obtain a certificate. We can add a task for that:
 namespace :letsencrypt do
   task :obtain_certificate do
     on roles(:app) do
-      certificate_request_domains = fetch(:letsencrypt_certificate_request_domains) || raise('Missing certificate request domains')
+      certificate_request_domains = fetch(:letsencrypt_certificate_request_domains) ||
+                                    raise('Missing certificate request domains')
       letsencrypt_dir = fetch(:letsencrypt_dir) || raise('Missing letsencrypt directory')
       certificate_dir = "#{letsencrypt_dir}/certificate"
       private_key_path = fetch(:letsencrypt_private_key_path) || raise('Missing private key path')
@@ -252,8 +263,6 @@ namespace :letsencrypt do
       end
 
       info "Creating symlinks for existing certificate."
-      # this is path based on example in
-      # https://github.com/KnapsackPro/capistrano-cookbook/blob/master/lib/capistrano/cookbook/templates/nginx.conf.erb#L54,L55
       # #{shared_path}/ssl_private_key.key is a path where nginx is looking for ssl certificate
       sudo "ln -nfs #{cert_privkey_path} #{shared_path}/ssl_private_key.key"
       sudo "ln -nfs #{cert_fullchain_path} #{shared_path}/ssl_cert.crt"
@@ -302,15 +311,17 @@ namespace :letsencrypt do
     if Rails.env.production?
       endpoint = 'https://acme-v01.api.letsencrypt.org/'
       certificate_request_domains = 'example.com www.example.com'
-      certificate_dir = "/home/deploy/apps/rails_app_example_production/shared/config/letsencrypt/certificate"
-      private_key_path = "/home/deploy/apps/rails_app_example_production/shared/config/letsencrypt/private_key.pem"
+      app_dir = "/home/deploy/apps/rails_app_example_production"
+      certificate_dir = "#{app_dir}/shared/config/letsencrypt/certificate"
+      private_key_path = "#{app_dir}/shared/config/letsencrypt/private_key.pem"
     else
       # Use staging endpoint to generate test certificate for you non production environment.
       # Your browser will detect it as unknown certificate.
       endpoint = 'https://acme-staging.api.letsencrypt.org/'
       certificate_request_domains = 'staging.example.com'
-      certificate_dir = "/home/deploy/apps/rails_app_example_staging/shared/config/letsencrypt/certificate"
-      private_key_path = "/home/deploy/apps/rails_app_example_staging/shared/config/letsencrypt/private_key.pem"
+      app_dir = "/home/deploy/apps/rails_app_example_staging"
+      certificate_dir = "#{app_dir}/shared/config/letsencrypt/certificate"
+      private_key_path = "#{app_dir}/shared/config/letsencrypt/private_key.pem"
     end
 
     cert_privkey_path = "#{certificate_dir}/privkey.pem"
@@ -318,7 +329,9 @@ namespace :letsencrypt do
     cert_chain_path = "#{certificate_dir}/chain.pem"
     cert_fullchain_path = "#{certificate_dir}/fullchain.pem"
 
-    if File.exists?(cert_privkey_path) && File.exists?(cert_path) && File.exists?(cert_chain_path) && File.exists?(cert_fullchain_path)
+    if File.exists?(cert_privkey_path) && File.exists?(cert_path) &&
+      File.exists?(cert_chain_path) && File.exists?(cert_fullchain_path)
+
       private_key = OpenSSL::PKey::RSA.new(File.read(private_key_path))
 
       # Initialize the client
@@ -342,7 +355,8 @@ namespace :letsencrypt do
 
       puts "[#{Time.now}] Certificate renewed!"
     else
-      puts "[#{Time.now}] Current certificate doesn't exist so you cannot renew it. Please deploy app to generate a new certificate."
+      puts "[#{Time.now}] Current certificate doesn't exist so you cannot renew it."
+      puts "Please deploy app to generate a new certificate."
     end
   end
 end
