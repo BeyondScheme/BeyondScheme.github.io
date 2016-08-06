@@ -18,7 +18,7 @@ Recently I was working on adding https to my website [KnapsackPro.com](https://k
 
 I needed a secure connection for my API rails application because my gem called [knapsack_pro](https://github.com/KnapsackPro/knapsack_pro-ruby), which is responsible for optimizing test suite split, sends test file names to API where the test suite split is happening. I wanted to keep connection more secure with SSL/TLS.
 
-I was looking for options like maybe buying a cheap certificate for a year but I needed a few certificate for a few domains: main website, api domain, staging website and api staging domain.
+I was looking for options like maybe buying a cheap certificate for a year but I needed a few certificates for domains like main website, api domain, staging website and api staging domain.
 
 A while ago I read on hacker news about [Let's Encrypt](https://letsencrypt.org). It's is a new Certificate Authority sponsored by many companies. They are aiming for a few things:
 
