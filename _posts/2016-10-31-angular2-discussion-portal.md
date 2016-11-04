@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Angular 2 application with real time data refreshing"
+title:  "Angular 2 application with refreshing data in real time"
 date:   2016-10-31 08:00:00 +0200
 author: "Tomasz Banaś"
 tags: angular angular2 gulp tslint rxjs
