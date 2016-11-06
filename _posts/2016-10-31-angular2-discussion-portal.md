@@ -17,7 +17,7 @@ __After this tutorial you will know:__
 Let's start with watching a quick demo how this project works.
 <img src="/images/blog/posts/angular2-discussion-portal/demo.gif"/>
 
-# 1 Set up project
+# 1. Set up project
 
 The whole project is available on [github](https://github.com/BeyondScheme/angular2-discussion-portal). Please follow instructions written in a [README](https://github.com/BeyondScheme/angular2-discussion-portal/blob/master/README.md) file to run the project. 
 
@@ -28,7 +28,7 @@ What we are going to use while building project:
 * gulp - tool to build our application,
 * tslint - checkstyle for typescript. I strongly recommend to use this tool - it will fail a build when some checkstyle rules will be violated.
 
-I'm going to briefly discuss each config file:
+The project contains a few configuration files like:
  
 1. `bs-config.json` Configuration file for lite-server. `ghost-mode` flag disabled synchronization of browsers and files. We're going to test our application on two instances so synchronization should be disabled.
 2. `db.json` Our database. This file is used by json-server.
@@ -41,34 +41,34 @@ I'm going to briefly discuss each config file:
 7. `tslint.json` Contains checkstyle rules for tslint.
 8. `typings\globals\es6-shim\index.d.ts` Typings needed by typescript.
 
-# 2 Architecture
+# 2. Architecture
 
 <img src="/images/blog/posts/angular2-discussion-portal/architecture.png"/>
 
 As you can see on image we have two components:
 
-#### __DashboardComponent__
-This component is responsible for displaying existing posts and an input for creating new one. Data for this component are provided by `PostService`.
+#### [_DashboardComponent_](https://github.com/BeyondScheme/angular2-discussion-portal/blob/master/src/ts/dashboard/components/dashboard.component.ts)
+This component is responsible for displaying existing posts and an input for creating new one. Data for this component are provided by [_PostService_](https://github.com/BeyondScheme/angular2-discussion-portal/blob/master/src/ts/shared/services/post.service.ts).
 
-#### __PostComponent__ 
-Displaying comments created under a particular post. Data for this component are provided by two services: `PostService` and `CommentService`.
-`PostService` load post information based on the post id which is url parameter:
+#### [_PostComponent_](https://github.com/BeyondScheme/angular2-discussion-portal/blob/master/src/ts/post/components/post.component.ts)
+Displaying comments created under a particular post. Data for this component are provided by two services: [_PostService_](https://github.com/BeyondScheme/angular2-discussion-portal/blob/master/src/ts/shared/services/post.service.ts) and [_CommentService_](https://github.com/BeyondScheme/angular2-discussion-portal/blob/master/src/ts/post/services/comment.service.ts).
+[_PostService_](https://github.com/BeyondScheme/angular2-discussion-portal/blob/master/src/ts/shared/services/post.service.ts) load post information based on the post id which is url parameter:
 
 {% highlight typescript %}
 this.route.params.forEach((params: Params) => {
-            if (params[PostComponent.ID_ROUTE_PARAM] !== undefined) {
-                let id: number = +params[PostComponent.ID_ROUTE_PARAM];
-                this.postService.getPost(id).subscribe(post => {
-                    this.post = post;
-                    this.refreshData();
-                });
-            } else {
-                this.router.navigate(["/dashboard"]);
-            }
+    if (params[PostComponent.ID_ROUTE_PARAM] !== undefined) {
+        let id: number = +params[PostComponent.ID_ROUTE_PARAM];
+        this.postService.getPost(id).subscribe(post => {
+            this.post = post;
+            this.refreshData();
         });
+    } else {
+        this.router.navigate(["/dashboard"]);
+    }
+});
 {% endhighlight %}
 
-### __Pulling data periodically__
+### Pulling data periodically
 After loading post we run function `refreshData()` which is worth wider discussion.
 {% highlight typescript %}
 private refreshData(): void {
@@ -124,7 +124,7 @@ public ngOnDestroy(): void {
 }
 {% endhighlight %}
 
-### 3 Directories structure
+### 3. Directories structure
 While writing first application in angular2 I was wondering what is the best practise for files structure in the repository. During working with angular2 I worked out structure which is simple and easy to maintain while adding new functionalities.
 
 <img src="/images/blog/posts/angular2-discussion-portal/packages_structure.png"/>
@@ -138,4 +138,6 @@ I have three main directories:
 
 ### Sum  up
 Nowadays frontend code is usually a separate application which communicates with backend. It is necessary to keep this code clean and easy to maintain. When you think about architecture - think not only about backend side, but also about frontend. If you want to refresh data on UI in real time, above architecture is worth considering.
+
+There is also possibility to use publish/subscribe architecture by integrating Angular 2 with [Meteor framework](https://www.meteor.com/), but you have to remember that in this solution your server needs to support WebSockets.
 
