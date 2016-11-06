@@ -1,17 +1,17 @@
 ---
 layout: post
 title:  "Angular 2 application with refreshing data in real time"
-date:   2016-10-31 08:00:00 +0200
+date:   2016-11-07 08:00:00 +0200
 author: "Tomasz Banaś"
-tags: angular angular2 gulp tslint rxjs
+tags: angular angular2 gulpjs tslint rxjs
 ---
 
-Angular2 was released October this year. On the Internet you can find more and more tutorials which shows how to build a simple application. This tutorial is quite different from them. It shows how to build an Angular 2 application where we're going to focus on architecture which will periodically pull data from backend to keep fresh data on UI.
+Angular 2 was released in October this year. On the Internet you can find more and more tutorials which shows how to build a simple application. This tutorial is quite different from them. It shows how to build an Angular 2 application where we're going to focus on architecture which will periodically pull data from backend to keep fresh data on UI.
 
 __After this tutorial you will know:__
 
-* how to set up angular2 project (using gulp + tslint) and build discussion portal,
-* how to build a proper architecture (using angular2 + rxjs),
+* how to set up Angular 2 project (using GulpJS + TSlint) and build discussion portal,
+* how to build a proper architecture (using Angular 2 + RxJs),
 * how to create components which will periodically pull date from backend,
 
 Let's start with watching a quick demo how this project works.
@@ -25,20 +25,20 @@ What we are going to use while building project:
 
 * lite-server - server which we will use to run the project,
 * json-server - it is needed for simple db with restful api (we'll share data between each app instance so that's why I didn't choose `angular-in-memory-web-api`),
-* gulp - tool to build our application,
-* tslint - checkstyle for typescript. I strongly recommend to use this tool - it will fail a build when some checkstyle rules will be violated.
+* GulpJS - tool to build our application,
+* TSlint - checkstyle for typescript. I strongly recommend to use this tool - it will fail a build when some checkstyle rules will be violated.
 
 The project contains a few configuration files like:
  
 1. `bs-config.json` Configuration file for lite-server. `ghost-mode` flag disabled synchronization of browsers and files. We're going to test our application on two instances so synchronization should be disabled.
 2. `db.json` Our database. This file is used by json-server.
-3. `gulfile.js` Config file for gulp. We have three tasks:
+3. `gulfile.js` Config file for GulpJS. We have three tasks:
     * `watch` - monitoring files changes and rebuilding if necessary,
-    * `tslint, build-ts, build-css` - tasks for running tslint, building typescripts and css files,
+    * `tslint, build-ts, build-css` - tasks for running TSlint, building typescripts and css files,
 4. `package.json` Contains npm dependencies for project.
 5. `systemjs.config.js` Provides information to a module loader about where to find application modules, and registers all the necessary packages.
-6. `tsconfig.json`Defines how the TypeScript compiler generates JavaScript from the project's files.
-7. `tslint.json` Contains checkstyle rules for tslint.
+6. `tsconfig.json` Defines how the TypeScript compiler generates JavaScript from the project's files.
+7. `tslint.json` Contains checkstyle rules for TSlint.
 8. `typings\globals\es6-shim\index.d.ts` Typings needed by typescript.
 
 # 2. Architecture
@@ -48,10 +48,10 @@ The project contains a few configuration files like:
 As you can see on image we have two components:
 
 #### [_DashboardComponent_](https://github.com/BeyondScheme/angular2-discussion-portal/blob/master/src/ts/dashboard/components/dashboard.component.ts)
-This component is responsible for displaying existing posts and an input for creating new one. Data for this component are provided by [_PostService_](https://github.com/BeyondScheme/angular2-discussion-portal/blob/master/src/ts/shared/services/post.service.ts).
+This component is responsible for displaying existing posts and an input for creating new one. Data for this component is provided by [_PostService_](https://github.com/BeyondScheme/angular2-discussion-portal/blob/master/src/ts/shared/services/post.service.ts).
 
 #### [_PostComponent_](https://github.com/BeyondScheme/angular2-discussion-portal/blob/master/src/ts/post/components/post.component.ts)
-Displaying comments created under a particular post. Data for this component are provided by two services: [_PostService_](https://github.com/BeyondScheme/angular2-discussion-portal/blob/master/src/ts/shared/services/post.service.ts) and [_CommentService_](https://github.com/BeyondScheme/angular2-discussion-portal/blob/master/src/ts/post/services/comment.service.ts).
+Displaying comments created under a particular post. Data for this component is provided by two services: [_PostService_](https://github.com/BeyondScheme/angular2-discussion-portal/blob/master/src/ts/shared/services/post.service.ts) and [_CommentService_](https://github.com/BeyondScheme/angular2-discussion-portal/blob/master/src/ts/post/services/comment.service.ts).
 [_PostService_](https://github.com/BeyondScheme/angular2-discussion-portal/blob/master/src/ts/shared/services/post.service.ts) load post information based on the post id which is url parameter:
 
 {% highlight typescript %}
@@ -69,7 +69,7 @@ this.route.params.forEach((params: Params) => {
 {% endhighlight %}
 
 ### Pulling data periodically
-After loading post we run function `refreshData()` which is worth wider discussion.
+After loading post we run function `refreshData()` which is worth wider description.
 {% highlight typescript %}
 private refreshData(): void {
     this.commentsSubscription = this.commentService.getComments(this.post.id).subscribe(comments => {
@@ -86,7 +86,7 @@ private subscribeToData(): void {
 This function is responsible for refreshing comments in real time. When someone add a new comment everyone who is reading this post will see it without need for refreshing page.
 
 Firstly, we invoke `commentService.getComments(id: number)` to retrieve comments from the backend. On each success call we run `subscribeToData()` which after 5s invoke once again `refreshData()`.
-It ensures that data on UI are constantly refresh.
+It ensures that data on UI is constantly refresh.
 
 You may wonder why we invoke `subscribeToData()` after successful call instead of adding in `ngOnInit()` method:
 {% highlight typescript %}
@@ -125,14 +125,14 @@ public ngOnDestroy(): void {
 {% endhighlight %}
 
 ### 3. Directories structure
-While writing first application in angular2 I was wondering what is the best practise for files structure in the repository. During working with angular2 I worked out structure which is simple and easy to maintain while adding new functionalities.
+While writing first application in Angular 2 I was wondering what is the best practise for files structure in the repository. During working with Angular 2 I worked out structure which is simple and easy to maintain while adding new functionalities.
 
 <img src="/images/blog/posts/angular2-discussion-portal/packages_structure.png"/>
 
 I have three main directories: 
 
 * html - to keep all html files, divided by pages and components. When the new component on dashboard is created new file is added to `html\dashboard`.
-* scss - all scss files. Lack of division by components, because basically each page has one scss file.
+* scss - all scss files. Divided only by pages. Main file [_app.scss_](https://github.com/BeyondScheme/angular2-discussion-portal/blob/master/src/scss/app.scss) imports all others scss files.
 * ts - typescripts files, divided by pages and type of classes (components/services/models). I also have `shared` directory which contains all code shared between different pages.
 
 
