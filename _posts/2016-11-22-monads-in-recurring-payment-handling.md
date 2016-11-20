@@ -6,13 +6,13 @@ author: "Artur Trzop"
 tags: ruby monads
 ---
 
-Maybe you heard about this weird thing called monad. Maybe you even tried to read more about the topic but you never use it in practice. Sometimes real usage examples can help to understand when might be worth it to look into monads and then try to pick a monad for our problem.
+Maybe you heard about this weird thing called monad. Maybe you even tried to read more about the topic but you never use it in practice. Sometimes real usage examples can help to understand when it might be worth to look into monads and then try to pick a monad for our problem.
 
-I am going to show you what was my problem while working on a payment handling system. I will leave the questions like what is the monad and what are examples of monads for the end of the article because there are already a lot of resources covering that.
+I am going to show you what my problem was while working on a payment handling system. I will leave the questions like what is the monad and what are examples of monads to the end of the article because there are already a lot of resources covering that.
 
 # Recurring payment system
 
-A while ago I was working on integration with Braintree Payments and my website so companies that are doing [optimal test suite parallelisation in ruby](https://knapsackpro.com/features?utm_source=beyond_scheme&utm_medium=blog_post&utm_campaign=monads&utm_content=optimal_parallelisation) with my tool can switch to paid monthly plan. Basically, the case was to have subscription-based billing.
+A while ago I was working on integration with Braintree Payments and my website, so companies that are doing [optimal test suite parallelisation in ruby](https://knapsackpro.com/features?utm_source=beyond_scheme&utm_medium=blog_post&utm_campaign=monads&utm_content=optimal_parallelisation) with my tool can switch to paid monthly plan. Basically, the case was to have subscription-based billing.
 
 I needed to handle a few things on the payment form.
 
@@ -99,7 +99,7 @@ end
 
 The flow in `billings controller` is simple. When something is ok then continue. If something is wrong then stop and return an error. There is monad for this called `Either`.
 
-There is great gem called [dry-monads](http://dry-rb.org/gems/dry-monads/) that have a few common monads for Ruby. We are going to use it.
+There is a great gem called [dry-monads](http://dry-rb.org/gems/dry-monads/) that have a few common monads for Ruby. We are going to use it.
 
 The `Either` monad has two type constructors: `Right` and `Left`. The `Right`
 is for everything went right cases and the `Left` is used when something has gone wrong.
@@ -227,6 +227,6 @@ To understand monads we need to first ask the question why do we even need monad
 
 When you will grasp the idea behind monads then it is worth to check other related concepts like functors and applicatives. There is a great article about [functors, applicatives, and monads in pictures](http://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html).
 
-If you want to learn more about monads in ruby examples then definitely check presentation [Refactoring Ruby with Monads by Tom Stuart](https://www.youtube.com/watch?v=J1jYlPtkrqQ).
+If you want to learn more about monads in Ruby examples then definitely check presentation [Refactoring Ruby with Monads by Tom Stuart](https://www.youtube.com/watch?v=J1jYlPtkrqQ).
 
 Do not forget the dry-monads gem has other monads examples like `Maybe` or `Try` monad. Check the [dry-monads docs](http://dry-rb.org/gems/dry-monads/)!
