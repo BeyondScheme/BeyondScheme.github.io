@@ -8,6 +8,8 @@ tags: ruby monads
 
 Maybe you heard about this weird thing called monad. Maybe you even tried to read more about the topic but you never use it in practice. Sometimes real usage examples can help to understand when it might be worth to look into monads and then try to pick a monad for our problem.
 
+<a href="https://en.wikipedia.org/wiki/Monad_(philosophy)"><img src="/images/blog/posts/monads-in-recurring-payment-handling/monad.png" style="float:right;margin-left:20px;width:300px;" /></a>
+
 I am going to show you what my problem was while working on a payment handling system. I will leave the questions like what is the monad and what are examples of monads to the end of the article because there are already a lot of resources covering that.
 
 # Recurring payment system
