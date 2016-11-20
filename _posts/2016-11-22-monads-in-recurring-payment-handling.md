@@ -8,11 +8,11 @@ tags: ruby monads
 
 Maybe you heard about this weird thing called monad. Maybe you even tried to read more about the topic but you never use it in practice. Sometimes real usage examples can help to understand when might be worth it to look into monads and then try to pick a monad for our problem.
 
-I'm going to show you what was my problem while working on a payment handling system. I will leave the questions like what is the monad and what are examples of monads for the end of the article because there are already a lot of resources covering that.
+I am going to show you what was my problem while working on a payment handling system. I will leave the questions like what is the monad and what are examples of monads for the end of the article because there are already a lot of resources covering that.
 
 # Recurring payment system
 
-A while ago I was working on integration with Braintree Payments and my website KnapsackPro.com so companies that are doing optimal test suite parallelisation in ruby with my tool can switch to paid monthly plan. Basically, the case was to have subscription-based billing.
+A while ago I was working on integration with Braintree Payments and my website so companies that are doing [optimal test suite parallelisation in ruby](https://knapsackpro.com/features?utm_source=beyond_scheme&utm_medium=blog_post&utm_campaign=monads&utm_content=optimal_parallelisation) with my tool can switch to paid monthly plan. Basically, the case was to have subscription-based billing.
 
 I needed to handle a few things on the payment form.
 
@@ -40,7 +40,7 @@ end
 
 As you can see there are a few cases when something can go wrong and we will have to show errors for the particular step that failed. You can imagine how `if` structure builds up when you have more cases to handle.
 
-Here you can see my real code example. It's just `create` action from Ruby on Rails controller. Part of the responsibilities like `create` or `update` for customer or subscription records in Braintree payment system was extracted to service objects called with suffix `upsert`. Those services are responsible for the operation of `create` or `update` when the record already exists.
+Here you can see my real code example. It is just `create` action from Ruby on Rails controller. Part of the responsibilities like `create` or `update` for customer or subscription records in Braintree payment system was extracted to service objects called with suffix `Upsert`. Those services are responsible for the operation of `create` or `update` when the record already exists.
 
 {% highlight ruby %}
 # app/controllers/dashboard/billings_controller.rb
@@ -219,7 +219,7 @@ class Billing::Payment
 end
 {% endhighlight %}
 
-When we run `call` method on service Billing::Payment we will get `Right` or `Left` object as a result. We can call on it the `success?` method to check whether all was right or not. By calling method `value` we get what was passed to `Right` or `Left` constructor. In the case of `Right` the value will be true. For `Left` the value is the error for a step that failed. Simple as that. You can easily extend this by binding more cases if you need that.
+When we run `call` method on the service `Billing::Payment` we will get `Right` or `Left` object as a result. We can call on the result the `success?` method to check whether all was right or not. By calling method `value` we get what was passed to `Right` or `Left` constructor. In the case of `Right` the value will be `true` because we set that. For `Left` the value is the error for a step that failed. Simple as that. You can easily extend this by binding more cases if you need that.
 
 # Demystifying monads
 
@@ -229,4 +229,4 @@ When you will grasp the idea behind monads then it is worth to check other relat
 
 If you want to learn more about monads in ruby examples then definitely check presentation [Refactoring Ruby with Monads by Tom Stuart](https://www.youtube.com/watch?v=J1jYlPtkrqQ).
 
-Don't forget the dry-monads gem has other monads examples like `Maybe` or `Try` monad. Check the [dry-monads docs](http://dry-rb.org/gems/dry-monads/)!
+Do not forget the dry-monads gem has other monads examples like `Maybe` or `Try` monad. Check the [dry-monads docs](http://dry-rb.org/gems/dry-monads/)!
