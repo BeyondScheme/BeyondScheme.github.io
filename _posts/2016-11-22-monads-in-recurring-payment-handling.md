@@ -16,7 +16,7 @@ I am going to show you what my problem was while working on a payment handling s
 
 A while ago I was working on integration with Braintree Payments and my website, so companies that are doing [optimal test suite parallelisation in ruby](https://knapsackpro.com/features?utm_source=beyond_scheme&utm_medium=blog_post&utm_campaign=monads&utm_content=optimal_parallelisation) with my tool can switch to paid monthly plan. Basically, the case was to have subscription-based billing.
 
-I needed to handle a few things on the payment form.
+I needed to handle a few things on the payment form:
 
 * form has to be validated
 * customer has to be created or his data should be updated in payment system (Braintree)
