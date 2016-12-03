@@ -36,10 +36,9 @@ The project contains a few configuration files like:
     * `watch` - monitoring files changes and rebuilding if necessary,
     * `tslint, build-ts, build-css` - tasks for running TSlint, building typescripts and css files,
 4. `package.json` Contains npm dependencies for project.
-5. `systemjs.config.js` Provides information to a module loader about where to find application modules, and registers all the necessary packages.
+5. `system-config.js` Provides information to a module loader about where to find application modules, and registers all the necessary packages.
 6. `tsconfig.json` Defines how the TypeScript compiler generates JavaScript from the project's files.
 7. `tslint.json` Contains checkstyle rules for TSlint.
-8. `typings\globals\es6-shim\index.d.ts` Typings needed by typescript.
 
 # 2. Architecture
 
