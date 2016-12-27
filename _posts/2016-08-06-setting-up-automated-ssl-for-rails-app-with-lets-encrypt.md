@@ -146,12 +146,12 @@ namespace :letsencrypt do
       letsencrypt_authorize_domains.split.each do |domain|
         info "Domain: #{domain}"
 
-        challenge_json_path = "#{letsencrypt_dir}/challenge_#{domain}.json"
+        authorization_uri_file = "#{letsencrypt_dir}/authorization_uri_#{domain}.txt"
         authorization = client.authorize(domain: domain)
 
         run_verification = false
 
-        unless test("[ -f #{challenge_json_path} ]")
+        unless test("[ -f #{authorization_uri_file} ]")
           # This example is using the http-01 challenge type.
           # Other challenges are dns-01 or tls-sni-01.
           challenge = authorization.http01
@@ -171,18 +171,17 @@ namespace :letsencrypt do
           # This method will return the right Content-Type should you decide to include one.
           info challenge.content_type
 
-          # save the challenge for use at another time
-          upload! StringIO.new(challenge.to_h.to_json), challenge_json_path
+          # save the authorization uri for use at another time
+          upload! StringIO.new(authorization.uri), authorization_uri_file
 
           run_verification = true
         end
 
 
-        challenge_json = capture :cat, challenge_json_path
+        authorization_uri = capture :cat, authorization_uri_file
 
-        # Load a saved challenge.
-        # This is only required if you need to reuse a saved challenge as outlined above.
-        challenge = client.challenge_from_hash(JSON.parse(challenge_json))
+        # Load a challenge based on authorization uri.
+        challenge = client.fetch_authorization(authorization_uri).http01
 
         # Save the file. We'll create a public directory to serve it from,
         # and inside it we'll create the challenge file.
@@ -206,7 +205,7 @@ namespace :letsencrypt do
         else
           info "Skipped verification of challenge. It's already verified."
           info "If you want to verify different domain please remove file:"
-          info "#{challenge_json_path} and run the task again."
+          info "#{authorization_uri_file} and run the task again."
         end
       end
     end
