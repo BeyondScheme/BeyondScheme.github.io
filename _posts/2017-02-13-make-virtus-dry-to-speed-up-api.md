@@ -7,13 +7,13 @@ tags: ruby virtus dry-rb
 ---
 
 [Virtus](https://github.com/solnic/virtus) is a popular ruby gem described as attributes on steroids for plain old ruby objects. I saw it being used in many API applications so
-when I was building API for my app I chose the virtus too. Over a year ago the [virtus gem was abandoned by its creator](https://www.reddit.com/r/ruby/comments/3sjb24/virtus_to_be_abandoned_by_its_creator/) and I learned more about [dry-rb](http://dry-rb.org) - a collection of next-generation Ruby libraries. One of the [virtus problem was performance](https://github.com/solnic/virtus/issues/287) and this article will be about it.
+when I was building API for my app I chose the virtus too. Over a year ago the [virtus gem was abandoned by its creator](https://www.reddit.com/r/ruby/comments/3sjb24/virtus_to_be_abandoned_by_its_creator/) and I learned more about [dry-rb](http://dry-rb.org) - a collection of next-generation Ruby libraries. One of the [virtus problems was performance](https://github.com/solnic/virtus/issues/287) and this article will be about it.
 
 # Virtus performance issues
 
-In 2015 I started building API for my gem knapsack_pro in order to [optimise test suite split across many CI nodes](https://knapsackpro.com). Recently I started seeing some significant difference with API performance for large users' test suites. The API response took ~500ms and sometimes event much more.
+In 2015 I started building API for my gem knapsack_pro in order to [optimize test suite split across many CI nodes](https://knapsackpro.com). Recently I started seeing some significant difference with API performance for large users' test suites. The API response took ~500ms and sometimes event much more.
 
-I analized logs with [request-log-analyzer](https://github.com/wvanbergen/request-log-analyzer) for one of the days with higher traffic and results were this:
+I analyzed logs with [request-log-analyzer](https://github.com/wvanbergen/request-log-analyzer) for one of the days with higher traffic and results were this:
 
 {% highlight plain %}
                                              ┃   Mean ┃ StdDev ┃    Min ┃    Max ┃    95 %tile
@@ -21,13 +21,13 @@ I analized logs with [request-log-analyzer](https://github.com/wvanbergen/reques
 API::V1::BuildDistributionsController#subset ┃  219ms ┃  158ms ┃    0ms ┃  612ms ┃  16ms-529ms
 {% endhighlight %}
 
-I did code profiling of the controller action with the [ruby-prof gem](https://github.com/ruby-prof/ruby-prof) and it turned out that half of the time is spend in virtus gem. Why it was a problem in my case?
+I did code profiling of the controller action with the [ruby-prof gem](https://github.com/ruby-prof/ruby-prof) and it turned out that half of the time is spent in virtus gem. Why was it a problem in my case?
 
 The [knapsack_pro gem](https://knapsackpro.com) sends information about test files to API and on the API side the each test file is a separate virtus object. So when someone has large test suite then the API slows down.
 
 # Virtus with array of many value objects
 
-Here is the example how I represent the test files in my codebase. Basically I have a `Node` which is one of the CI node where is part of test suite executed. The `Node` has many test files as [value objects](https://en.wikipedia.org/wiki/Value_object).
+Here is the example how I represent the test files in my codebase. Basically, I have a `Node` which is one of the CI nodes where is part of test suite executed. The `Node` has many test files as [value objects](https://en.wikipedia.org/wiki/Value_object).
 
 {% highlight ruby %}
 class ValueObject
@@ -52,11 +52,11 @@ end
 
 # What are options to improve speed?
 
-I was wondering about reasonable solution for my virtus performance issue. One of it that occured was to switch to dry-rb but it would require more work to adjust the whole codebase to it. I decided to try replace virtus value objects with [dry-struct](http://dry-rb.org/gems/dry-struct/) which is a gem built on top of [dry-types](http://dry-rb.org/gems/dry-types/) which provides virtus-like DSL for defining typed struct classes. One of nice virtus feature was input parameter sanitization and coercion. Dry-types would provide that as well.
+I was wondering about a reasonable solution for my virtus performance issue. One of it that occurred was to switch to dry-rb but it would require more work to adjust the whole codebase to it. I decided to try to replace virtus value objects with [dry-struct](http://dry-rb.org/gems/dry-struct/) which is a gem built on top of [dry-types](http://dry-rb.org/gems/dry-types/) which provides virtus-like DSL for defining typed struct classes. One of nice virtus feature was input parameter sanitization and coercion. Dry-types would provide that as well.
 
 # Start with tests
 
-I had two options. Try to add dry-struct to my codebase right a way and check whether my test suite project still passes or play a bit with virtus and dry libs and write tests for a few cases I'm most interested about to cover.
+I had two options. Try to add dry-struct to my codebase right away and check whether my test suite project still passes or play a bit with virtus and dry libs and write tests for a few cases I'm most interested about to cover.
 
 I wrote an example of `NodeWithVirtusValueObject` value object with many `VirtusItem` items similar to my `Node` class.
 
@@ -79,7 +79,7 @@ class NodeWithVirtusValueObject
 end
 {% endhighlight %}
 
-I added tests to cover cases when hash items is coerced into `VirtusItem`. There is also example when the `nil` is passed as items or when the `{}` is passed. `{}` is for a case when postgres items field has json type.
+I added tests to cover cases when hash items are coerced into `VirtusItem`. There is also the example when the `nil` is passed as items or when the `{}` is passed. `{}` is for a case when postgres items field has json type.
 
 {% highlight ruby %}
 # spec/node_spec.rb
@@ -289,7 +289,7 @@ time_me.call -> {
 }
 {% endhighlight %}
 
-And those are results. Numbers are in miliseconds:
+And those are results. Numbers are in milliseconds:
 
 {% highlight plain %}
 Init NodeWithVirtusValueObject with hash as items
@@ -313,7 +313,7 @@ You can find the whole [repository with virtus and dry examples](https://github.
 
 # Dry the production code
 
-I adjusted my application code and also added coercion for action controller params along with symbolize keys.
+I adjusted my application code and also added coercion for action controller params along with symbolizing keys.
 
 {% highlight ruby %}
 class ArrayTestFileValue < Virtus::Attribute
@@ -347,7 +347,7 @@ end
 {% endhighlight %}
 
 My new test file value object has coercion thanks to dry-types and custom method attributes that used to be provided by virtus.
-There is also defined [constructor type schema](http://dry-rb.org/gems/dry-types/hash-schemas/) that allows to omit attributes in constructor.
+There is also defined [constructor type schema](http://dry-rb.org/gems/dry-types/hash-schemas/) that allows omitting attributes in the constructor.
 
 {% highlight ruby %}
 class TestFileValue < Dry::Struct
@@ -381,7 +381,7 @@ end
 # Measure the dry virtus performance on production
 
 I again analyzed the production logs after using virtus with dry libs. As you remember the virtus took half of the request time before.
-Here is performance results after dry improvements:
+Here are performance results after dry improvements:
 
 {% highlight plain %}
                                              ┃   Mean ┃ StdDev ┃    Min ┃    Max ┃    95 %tile
@@ -391,4 +391,4 @@ API::V1::BuildDistributionsController#subset ┃  102ms ┃   65ms ┃    7ms �
 
 The API performance improved twice. I did progress to make API faster.
 
-I recommend to check out the [dry-rb](http://dry-rb.org) and learn more about good stuff there. A while ago I wrote the [article about dry-monads](http://beyondscheme.com/2016/monads-in-recurring-payment-handling) so you may find it intresting too.
+I recommend to check out the [dry-rb](http://dry-rb.org) and learn more about good stuff there. A while ago I wrote the [article about dry-monads](http://beyondscheme.com/2016/monads-in-recurring-payment-handling) so you may find it interesting too.
