@@ -29,7 +29,7 @@ The [knapsack_pro gem](https://knapsackpro.com) sends information about test fil
 
 # Virtus with array of many value objects
 
-Here is an example how I represent the test files in my codebase. Basically, I have a `Node` which is one of the CI nodes where is part of test suite executed. The `Node` has many test files as [value objects](https://en.wikipedia.org/wiki/Value_object).
+Here is an example how I represent the test files in my codebase. Basically, I have a `Node` which is one of the CI nodes where a part of test suite is executed. The `Node` has many test files as [value objects](https://en.wikipedia.org/wiki/Value_object).
 
 {% highlight ruby %}
 class ValueObject
