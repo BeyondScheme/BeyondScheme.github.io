@@ -13,7 +13,7 @@ when I was building API for my app I chose the virtus too. Over a year ago the [
 
 # Virtus performance issues
 
-In 2015 I started building API for my gem knapsack_pro in order to [optimize test suite split across many CI nodes](https://knapsackpro.com). Recently I started seeing some significant difference with API performance for large users' test suites. The API response took ~500ms and sometimes event much more.
+In 2015 I started building API for my gem [knapsack_pro](https://github.com/KnapsackPro/knapsack_pro-ruby) in order to [optimize test suite split across many CI nodes](https://knapsackpro.com). Recently, I started seeing some significant difference with API performance for large users' test suites. The API response took ~500ms and sometimes even much more.
 
 I analyzed logs with [request-log-analyzer](https://github.com/wvanbergen/request-log-analyzer) for one of the days with higher traffic and results were this:
 
@@ -25,11 +25,11 @@ API::V1::BuildDistributionsController#subset ┃  219ms ┃  158ms ┃    0ms �
 
 I did code profiling of the controller action with the [ruby-prof gem](https://github.com/ruby-prof/ruby-prof) and it turned out that half of the time is spent in virtus gem. Why was it a problem in my case?
 
-The [knapsack_pro gem](https://knapsackpro.com) sends information about test files to API and on the API side the each test file is a separate virtus object. So when someone has large test suite then the API slows down.
+The [knapsack_pro gem](https://knapsackpro.com) sends information about test files to API and on the API side each test file is a separate virtus object. In result, when someone has large test suite then the API slows down.
 
 # Virtus with array of many value objects
 
-Here is the example how I represent the test files in my codebase. Basically, I have a `Node` which is one of the CI nodes where is part of test suite executed. The `Node` has many test files as [value objects](https://en.wikipedia.org/wiki/Value_object).
+Here is an example how I represent the test files in my codebase. Basically, I have a `Node` which is one of the CI nodes where is part of test suite executed. The `Node` has many test files as [value objects](https://en.wikipedia.org/wiki/Value_object).
 
 {% highlight ruby %}
 class ValueObject
@@ -54,7 +54,7 @@ end
 
 # What are options to improve speed?
 
-I was wondering about a reasonable solution for my virtus performance issue. One of it that occurred was to switch to dry-rb but it would require more work to adjust the whole codebase to it. I decided to try to replace virtus value objects with [dry-struct](http://dry-rb.org/gems/dry-struct/) which is a gem built on top of [dry-types](http://dry-rb.org/gems/dry-types/) which provides virtus-like DSL for defining typed struct classes. One of nice virtus feature was input parameter sanitization and coercion. Dry-types would provide that as well.
+I was wondering about a reasonable solution for my virtus performance issue. One of it that occurred was to switch to dry-rb but it would require more work to adjust the whole codebase to it. I decided to try to replace virtus value objects with [dry-struct](http://dry-rb.org/gems/dry-struct/) which is a gem built on top of [dry-types](http://dry-rb.org/gems/dry-types/) which provides virtus-like DSL for defining typed struct classes. One of nice virtus feature was input parameter sanitization and coercion. Dry-types provides that as well.
 
 # Start with tests
 
@@ -149,7 +149,7 @@ describe 'Node' do
 end
 {% endhighlight %}
 
-Now when I had basic test coverage I could add dry libs.
+Now when I had a basic test coverage I could add dry libs.
 
 
 {% highlight ruby %}
