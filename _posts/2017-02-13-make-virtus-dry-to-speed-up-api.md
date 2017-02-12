@@ -6,7 +6,7 @@ author: "Artur Trzop"
 tags: ruby virtus dry-rb
 ---
 
-[Virtus](https://github.com/solnic/virtus) is a popular ruby gem described as attributes on steroids for plain old ruby objects. I saw it being used in many API applications so
+[Virtus](https://github.com/solnic/virtus) is a popular Ruby gem described as attributes on steroids for plain old Ruby objects. I saw it being used in many API based applications so
 when I was building API for my app I chose the virtus too. Over a year ago the [virtus gem was abandoned by its creator](https://www.reddit.com/r/ruby/comments/3sjb24/virtus_to_be_abandoned_by_its_creator/). A new set of libraries become alternative for virtus - [dry-rb](http://dry-rb.org) - a collection of next-generation Ruby libraries. One of the [virtus problems was performance](https://github.com/solnic/virtus/issues/287) and this article will be about it.
 
 <img src="/images/blog/posts/make-virtus-dry-to-speed-up-api/dry-virtus.jpg" style="float:right;margin-left:20px;width:400px;" alt="dry virtus" />
