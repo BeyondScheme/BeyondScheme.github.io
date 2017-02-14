@@ -54,7 +54,7 @@ end
 
 # What are options to improve speed?
 
-I was wondering about a reasonable solution for my virtus performance issue. One of it that occurred was to switch to dry-rb but it would require more work to adjust the whole codebase to it. I decided to try to replace virtus value objects with [dry-struct](http://dry-rb.org/gems/dry-struct/) which is a gem built on top of [dry-types](http://dry-rb.org/gems/dry-types/) which provides virtus-like DSL for defining typed struct classes. One of nice virtus feature was input parameter sanitization and coercion. Dry-types provides that as well.
+I was wondering about a reasonable solution for my virtus performance issue. One of it that occurred was to switch to dry-rb but it would require more work to adjust the whole codebase to it. I decided to try to replace virtus value objects with [dry-struct](http://dry-rb.org/gems/dry-struct/) which is a gem built on top of [dry-types](http://dry-rb.org/gems/dry-types/) which provides virtus-like DSL for defining typed struct classes. One of nice virtus feature was input parameter sanitization and coercion. Dry-types provides that as well but please note that coercions in dry-types are not an equivalent of what virtus does. You need to [pick types depending on your use case](http://dry-rb.org/gems/dry-types/built-in-types/).
 
 # Start with tests
 
